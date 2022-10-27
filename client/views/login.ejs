@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link
+      href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&family=Poppins:wght@200;300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        grid-template-columns: 600px auto;
+      }
+      .header {
+        width: 100%;
+        height: fit-content;
+        background: rgb(183, 243, 151);
+        border-bottom-left-radius: 3mm;
+        border-bottom-right-radius: 3mm;
+      }
+      .logo {
+        width: fit-content;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "work sans";
+        font-weight: 400;
+        font-size: x-large;
+        color: rgb(19, 31, 0);
+      }
+      .logo span {
+        font-size: x-large;
+        margin-right: 5px;
+      }
+      .right {
+        background: rgb(19, 31, 0) url(../images/doodle.png);
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        flex-wrap: wrap;
+        background-repeat: repeat;
+      }
+      .symbols {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .symbols span {
+        font-size: 140px;
+        color: rgb(183, 243, 151);
+      }
+      .left {
+        min-height: 100vh;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-direction: column;
+      }
+      .forms {
+        width: 100%;
+        height: fit-content;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        justify-self: center;
+      }
+      form {
+        width: 75%;
+        padding: 20px;
+        border-radius: 3mm;
+        font-family: poppins;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-direction: column;
+      }
+      form span {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      }
+      form input {
+        outline: none;
+        border: none;
+        width: 90%;
+        height: 25px;
+        padding: 5px 10px;
+        margin-bottom: 35px;
+        border: 0.5mm solid rgba(19, 31, 0, 0.742);
+        font-family: poppins;
+        border-radius: 1mm;
+        transition: 0.25s;
+        z-index: 1;
+        font-weight: 500;
+      }
+      .formtitle {
+        align-self: flex-start;
+        font-size: larger;
+        font-weight: 500;
+        margin-bottom: 35px;
+        background: rgb(19, 31, 0);
+        padding: 5px 12px;
+        border-radius: 6mm;
+        color: rgb(183, 243, 151);
+      }
+      input:focus {
+        border: rgb(56, 106, 32) 0.6mm solid;
+      }
+      input:focus::placeholder {
+        opacity: 0;
+      }
+      .label {
+        position: absolute;
+        top: 0px;
+        left: 10px;
+        width: fit-content;
+        font-size: small;
+        z-index: 0;
+        transition: 0.25s;
+        color: rgb(56, 106, 32);
+        font-weight: 500;
+      }
+      input:focus + .label {
+        top: -20px;
+      }
+      .submit {
+        background: rgb(56, 106, 32);
+        color: white;
+        border-radius: 2mm;
+        font-size: large;
+        border: none;
+        outline: none;
+        font-family: poppins;
+        width: 95%;
+        margin-bottom: 10px;
+        cursor: pointer;
+        padding: 5px 0px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.25s;
+      }
+      .submit span {
+        font-size: x-large;
+        color: white;
+        width: fit-content;
+        margin-left: 5px;
+      }
+      .second {
+        background: rgb(217, 231, 203);
+        color: rgb(19, 31, 0);
+        border-radius: 2mm;
+        font-size: large;
+        border: none;
+        outline: none;
+        font-family: poppins;
+        min-width: 95%;
+        cursor: pointer;
+        padding: 5px 0px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.25s;
+      }
+      .second span {
+        font-size: x-large;
+        color: rgb(19, 31, 0);
+        width: fit-content;
+        margin-left: 5px;
+      }
+      .third {
+        background: rgb(255, 255, 255);
+        color: rgb(19, 31, 0);
+        border-radius: 2mm;
+        border: 0.3mm solid rgba(19, 31, 0, 0.242);
+        font-size: large;
+        outline: none;
+        font-family: poppins;
+        min-width: 95%;
+        cursor: pointer;
+        padding: 4px 0px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.25s;
+      }
+      .third img {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+      }
+      .icon {
+        position: absolute;
+        font-size: 20px;
+        right: 15px;
+        top: 10px;
+        width: fit-content;
+        z-index: 1;
+        color: rgba(19, 31, 0, 0.628);
+      }
+      input:not(:placeholder-shown) + .label {
+        top: -20px;
+      }
+      .fpass {
+        width: 93%;
+        text-align: left;
+        text-decoration: none;
+        color: rgb(56, 106, 32);
+        font-size: small;
+        font-weight: 500;
+        margin-top: 10px;
+        margin-bottom: 25px;
+      }
+      button:hover {
+        box-shadow: 2px 2px 2px rgba(19, 31, 0, 0.158);
+      }
+      #form2 {
+        display: none;
+      }
+      .notice {
+        margin: auto;
+        width: 80%;
+      }
+      .notice .content {
+        width: fit-content;
+        padding: 5px 10px;
+        font-family: poppins;
+        font-size: medium;
+        color: rgb(183, 243, 151);
+        background: rgb(19, 31, 0);
+        border-radius: 6mm;
+        display: inline-flex;
+        align-items: center;
+        transform: rotateY(90deg);
+        transition: 0.35s;
+      }
+      .notice .content span {
+        margin-right: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="left">
+      <section class="header">
+        <div class="logo">
+          <span class="material-icons-round"> radio_button_checked </span>
+          Video Call
+        </div>
+      </section>
+      <a href="/login" style="display: none" id="loginLink"></a>
+      <% if(data){ %>
+      <div class="notice">
+        <div class="content" id="content">
+          <span class="material-icons-round"> <%= data.symbol %> </span>
+          <%= data.message %>
+        </div>
+      </div>
+      <script>
+        window.onload = function () {
+          let content = document.getElementById("content");
+          content.style.transform = "rotateY(0deg)";
+          setTimeout(() => {
+            content.style.transform = "rotateY(90deg)";
+            document.getElementById("loginLink").click();
+          }, 3000);
+        };
+      </script>
+      <%}%>
+      <section class="forms">
+        <form action="/login" method="post" id="form1">
+          <div class="formtitle">Welcome Back!</div>
+          <span class="inputf">
+            <input
+              type="text"
+              name="Email"
+              id=""
+              required
+              placeholder="Email"
+            />
+            <span class="label">Email</span>
+            <span class="material-icons-round icon"> alternate_email </span>
+          </span>
+          <span class="inputf">
+            <input
+              type="password"
+              name="Password"
+              id=""
+              required
+              placeholder="Password"
+              style="margin-bottom: 0"
+            />
+            <span class="label">Password</span>
+            <span class="material-icons-outlined icon"> lock </span>
+          </span>
+          <a href="#" class="fpass">Forgot Password?</a>
+          <button type="submit" class="submit">
+            Login <span class="material-icons-round"> east </span>
+          </button>
+          <div
+            style="
+              width: 100%;
+              margin-bottom: 10px;
+              font-size: small;
+              text-align: center;
+              font-family: 'work sans';
+              font-weight: 500;
+            "
+          >
+            Or
+          </div>
+          <button type="button" class="third">
+            <img src="../images/Google__G__Logo.svg.png" alt="logo" /> Login
+            with Google
+          </button>
+          <button type="button" class="second" id="reg">
+            Register <span class="material-icons-round"> last_page </span>
+          </button>
+        </form>
+
+        <form
+          action="/register"
+          method="post"
+          id="form2"
+          onsubmit="return checkPass()"
+        >
+          <div class="formtitle">Create Account</div>
+          <span class="inputf">
+            <input
+              type="text"
+              name="Email"
+              id=""
+              required
+              placeholder="Email"
+            />
+            <span class="label">Email</span>
+            <span class="material-icons-round icon"> alternate_email </span>
+          </span>
+          <span class="inputf">
+            <input
+              type="text"
+              name="Username"
+              id=""
+              required
+              placeholder="Username"
+            />
+            <span class="label">Username</span>
+            <span class="material-icons-round icon"> person_outline </span>
+          </span>
+          <span class="inputf">
+            <input
+              type="password"
+              name="Password"
+              id="pa"
+              required
+              placeholder="Password"
+            />
+            <span class="label">Password</span>
+            <span class="material-icons-outlined icon"> lock </span>
+          </span>
+          <span class="inputf">
+            <input
+              type="password"
+              name="CPassword"
+              id="cp"
+              required
+              placeholder="Conform Password"
+            />
+            <span class="label">Conform Password</span>
+            <span class="material-icons-outlined icon"> vpn_key </span>
+          </span>
+          <button type="submit" class="submit" style="margin-bottom: 20px">
+            Register <span class="material-icons-round"> east </span>
+          </button>
+          <button type="button" class="second" id="log">
+            Login <span class="material-icons-round"> last_page </span>
+          </button>
+        </form>
+      </section>
+      <script>
+        var reg = document.getElementById("reg");
+        var form1 = document.getElementById("form1");
+        var form2 = document.getElementById("form2");
+        var log = document.getElementById("log");
+        reg.onclick = function () {
+          form1.style.display = "none";
+          form2.style.display = "flex";
+        };
+        log.onclick = function () {
+          form1.style.display = "flex";
+          form2.style.display = "none";
+        };
+
+        function checkPass() {
+          let cp = document.getElementById("cp").value;
+          let pa = document.getElementById("pa").value;
+          if (!(pa == cp)) {
+            alert("Passwords did not match");
+          }
+          return cp == pa;
+        }
+      </script>
+    </div>
+    <div class="right">
+      <div class="symbols">
+        <span class="material-icons-round"> play_arrow </span>
+        <span class="material-icons-round"> pause </span>
+      </div>
+      <div class="symbols">
+        <span class="material-icons-round"> stop </span>
+        <span class="material-icons-round"> fiber_manual_record </span>
+        <span class="material-icons-round"> videocam </span>
+      </div>
+      <div
+        class="symbols"
+        style="
+          font-family: 'work sans';
+          color: rgb(183, 243, 151);
+          font-size: large;
+        "
+      >
+        Video Call
+      </div>
+    </div>
+  </body>
+</html>

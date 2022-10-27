@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product</title>
+    <link
+      href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&family=Poppins:wght@200;300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <style>
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        overflow-x: hidden;
+        margin: 0;
+        scroll-behavior: smooth;
+      }
+      ::-webkit-scrollbar {
+        width: 10px;
+      }
+      ::-webkit-scrollbar-track {
+        border-radius: 10px;
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgb(155, 155, 155);
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: rgb(110, 110, 110);
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        position: relative;
+        background: rgb(246, 247, 251);
+        width: 100vw;
+        overflow-x: hidden;
+      }
+      .header {
+        width: 100%;
+        padding: 14px 0;
+        display: flex;
+        align-items: center;
+        border-bottom: 0.5mm solid rgba(0, 0, 0, 0.174);
+        position: sticky;
+        top: 0;
+        left: 0;
+        justify-content: space-between;
+        background: white;
+        z-index: 1;
+      }
+      .middle-abs {
+        position: absolute;
+        width: 100%;
+      }
+      .middle {
+        margin: auto;
+        width: fit-content;
+        height: fit-content;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        border-radius: 50%;
+        text-align: center;
+        font-family: "Plus Jakarta Sans";
+        font-size: xx-large;
+      }
+      .middle span {
+        width: 30px;
+        height: 30px;
+        text-align: center;
+        line-height: 30px;
+        background: rgb(20, 121, 203);
+        border-radius: 50%;
+        font-size: 20px;
+        color: white;
+      }
+      .left {
+        float: left;
+        z-index: 2;
+      }
+      .right {
+        z-index: 2;
+      }
+      .left span,
+      .right span {
+        display: block;
+        font-size: 40px;
+        color: rgb(117, 124, 138);
+        margin: 0 10px;
+        cursor: pointer;
+      }
+      .navigation {
+        width: 28vw;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        right: 0;
+        background: white;
+        z-index: 10;
+        box-shadow: -10px 0 10px rgba(0, 0, 0, 0.169);
+        transition: 0.25s;
+        display: none;
+      }
+      .nav-top {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 15px 0;
+        border-bottom: 0.3mm solid rgb(192, 192, 192);
+      }
+      .nav-top-logo {
+        width: fit-content;
+        height: fit-content;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 10px;
+        font-family: poppins;
+        font-size: xx-large;
+      }
+      .nav-top-logo span {
+        width: 30px;
+        height: 30px;
+        font-size: 20px;
+        line-height: 30px;
+        border-radius: 50%;
+        background: rgb(20, 121, 203);
+        color: white;
+        text-align: center;
+      }
+      .nav-top-close {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .nav-top-close span {
+        color: red;
+        font-size: 40px;
+        font-weight: 500;
+      }
+      .nav-body {
+        width: 100%;
+        font-family: "Plus Jakarta Sans";
+      }
+      .nav-body ul {
+        width: 100%;
+        list-style: none;
+        padding: 0;
+      }
+      .nav-body ul li {
+        width: 100%;
+        margin-bottom: 20px;
+      }
+      .nav-body ul li a {
+        width: 100%;
+        text-decoration: none;
+        font-size: 22px;
+        color: rgb(41, 41, 41);
+        display: flex;
+        align-items: center;
+        padding: 10px 0;
+        margin: auto;
+        border-radius: 2mm;
+        letter-spacing: 2px;
+        font-weight: 500;
+      }
+      .nav-body ul li a span {
+        font-size: 26px;
+        color: rgb(41, 41, 41);
+        margin-right: 15px;
+        margin-left: 10px;
+      }
+      footer {
+        font-family: poppins;
+        width: 100%;
+        background: rgb(255, 255, 255);
+        padding: 20px 0;
+        margin-top: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+      .fleft {
+        min-width: 25%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 0 15px;
+      }
+      .ftitle {
+        display: flex;
+        align-items: center;
+        color: rgb(138, 138, 138);
+        font-weight: 400;
+        font-size: x-large;
+        letter-spacing: 1px;
+        margin-right: 10px;
+      }
+      .ftitle span {
+        width: 28px;
+        height: 28px;
+        font-size: 18px;
+        line-height: 28px;
+        border-radius: 50%;
+        background: rgb(138, 138, 138);
+        color: white;
+        text-align: center;
+      }
+      .fleft a {
+        text-decoration: none;
+        font-size: medium;
+        color: rgb(173, 173, 173);
+      }
+      .fright {
+        margin: 0 15px;
+        font-size: medium;
+        color: rgb(138, 138, 138);
+      }
+      .main {
+        width: 100%;
+        position: relative;
+      }
+      .content {
+        margin: auto;
+        width: 90%;
+        position: relative;
+      }
+      .btitle {
+        margin: 25px 0;
+        font-size: 25px;
+        font-family: "Plus Jakarta Sans";
+        font-weight: 500;
+      }
+      .item {
+        width: 100%;
+        background: white;
+        border-radius: 3mm;
+        box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.169);
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+        flex-wrap: wrap;
+      }
+      .item-left {
+        margin: 25px;
+      }
+      .item-left img {
+        width: 350px;
+        height: 350px;
+      }
+      .item-right {
+        font-family: poppins;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        margin: 10px 25px;
+      }
+      .mrp {
+        font-size: x-large;
+      }
+      .cat {
+        font-size: large;
+        font-weight: 500;
+        background: rgb(255, 249, 218);
+        padding: 5px 10px;
+        border-radius: 2mm;
+        color: orange;
+        width: fit-content;
+        margin: 20px 0;
+      }
+      .sub-btn {
+        background: rgb(20, 121, 203);
+        color: white;
+        padding: 7px 18px;
+        font-size: x-large;
+        border-radius: 6mm;
+        outline: none;
+        border: none;
+        margin-top: 30px;
+        display: flex;
+        cursor: pointer;
+        box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.201);
+      }
+      .sub-btn span {
+        font-size: x-large;
+      }
+      .rating {
+        font-size: large;
+        font-weight: 500;
+        margin-bottom: 40px;
+        display: flex;
+        align-items: flex-end;
+      }
+      .rating span {
+        color: rgb(255, 219, 13);
+        font-size: xx-large;
+      }
+      @media only screen and (max-width: 600px) {
+        .navigation {
+          width: 88vw;
+          box-shadow: -12vw 0 0 rgba(0, 0, 0, 0.219);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <section class="navigation" id="nav">
+      <div class="nav-top">
+        <div class="nav-top-logo">
+          Amaz
+          <span class="material-icons-outlined"> shopping_bag </span>
+          n
+        </div>
+        <div class="nav-top-close" id="nav-close">
+          <span class="material-icons"> close </span>
+        </div>
+      </div>
+      <div class="nav-body">
+        <ul>
+          <li>
+            <a href=""
+              ><span class="material-icons-outlined"> account_circle </span
+              >Profile</a
+            >
+          </li>
+          <li>
+            <a href=""
+              ><span class="material-icons-outlined"> info </span>About</a
+            >
+          </li>
+          <li>
+            <a href=""
+              ><span class="material-icons-outlined"> bug_report </span
+              >Report</a
+            >
+          </li>
+          <li>
+            <a href="/logout"
+              ><span class="material-icons-round"> logout </span>Logout</a
+            >
+          </li>
+        </ul>
+      </div>
+    </section>
+    <section class="header">
+      <div class="left">
+        <span class="material-icons-round backBtn"> arrow_back </span>
+      </div>
+      <div class="middle-abs">
+        <div class="middle">
+          Amaz
+          <span class="material-icons-outlined"> shopping_bag </span>
+          n
+        </div>
+      </div>
+      <div class="right">
+        <span class="material-icons-round menuBtn" id="nav-open"> menu </span>
+      </div>
+    </section>
+    <section class="main">
+      <div class="content">
+        <% if(data.product){ %>
+        <div class="btitle"><%=data.product.itemName%></div>
+        <div class="item">
+          <div class="item-left">
+            <img src="" alt="" id="pimg" />
+            <script>
+              var a = "<%=data.product.itemImage%>";
+              var b = a.indexOf("/d/");
+              b = b + 3;
+              var c = a.indexOf("/view");
+              var img = a.slice(b, c);
+              var img = "http://drive.google.com/uc?export=view&id=" + img;
+              document.getElementById("pimg").src = img;
+            </script>
+          </div>
+          <div class="item-right">
+            <div class="rating">
+              <%=data.product.itemRating%><span class="material-icons">
+                star_rate
+              </span>
+            </div>
+            <div class="price">
+              <div class="offer"><%=data.product.itemOffer%>% OFF</div>
+              <div class="mrp">
+                MRP: <Strong><%=data.product.itemPrice%>Rs</Strong>
+              </div>
+            </div>
+            <div class="cat"><%=data.product.itemCategory%></div>
+            <div class="cat">Seller: <%=data.product.itemSeller%></div>
+            <form action="" method="post">
+              <button type="submit" class="sub-btn">
+                Add To Cart
+                <span class="material-icons-outlined"> shopping_cart </span>
+              </button>
+            </form>
+          </div>
+        </div>
+        <%}%>
+      </div>
+    </section>
+    <footer>
+      <div class="fleft">
+        <div class="ftitle">
+          Amaz<span class="material-icons-outlined"> shopping_bag </span>n
+        </div>
+        <a href="" target="_blank" rel="noopener noreferrer">Feedback</a>
+      </div>
+      <div class="fright">
+        <p>
+          Copyright ©
+          <script>
+            var CurrentYear = new Date().getFullYear();
+            document.write(CurrentYear);
+          </script>
+        </p>
+      </div>
+    </footer>
+    <script>
+      var navOpen = document.getElementById("nav-open");
+      var nav = document.getElementById("nav");
+      var navClose = document.getElementById("nav-close");
+      navOpen.onclick = function () {
+        nav.style.display = "block";
+      };
+      navClose.onclick = function () {
+        nav.style.display = "none";
+      };
+    </script>
+  </body>
+</html>

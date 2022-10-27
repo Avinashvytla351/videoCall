@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home | Video Call</title>
+    <link
+      href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&family=Poppins:wght@200;300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      ::-webkit-scrollbar {
+        width: 10px;
+      }
+      ::-webkit-scrollbar-track {
+        border-radius: 10px;
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgb(155, 155, 155);
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: rgb(110, 110, 110);
+      }
+      body {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      .header {
+        width: 100%;
+        height: fit-content;
+        background: rgb(233, 239, 249);
+        border-bottom-left-radius: 3mm;
+        border-bottom-right-radius: 3mm;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .logo {
+        width: fit-content;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "work sans";
+        font-weight: 400;
+        font-size: x-large;
+        color: rgb(0, 31, 39);
+      }
+      .logo span {
+        font-size: x-large;
+        margin-right: 5px;
+      }
+      .meet a {
+        text-decoration: none;
+        background: rgb(194, 231, 255);
+        padding: 7px 14px;
+        border-radius: 6mm;
+        font-family: poppins;
+        font-size: medium;
+        color: rgb(0, 31, 39);
+        display: inline-flex;
+        align-items: center;
+        box-shadow: 1px 1px 1px rgba(0, 31, 39, 0.178);
+        font-weight: 500;
+      }
+      .meet {
+        padding: 0 20px;
+      }
+      .meet a:hover {
+        background: rgb(187, 221, 245);
+      }
+    </style>
+  </head>
+  <body>
+    <% if(data){ %>
+    <section class="header">
+      <div class="logo">
+        <span class="material-icons-round"> radio_button_checked </span>
+        Video Call
+      </div>
+      <div class="meet">
+        <a href="/newMeet"
+          >New Meeting <span class="material-icons-round"> add </span></a
+        >
+      </div>
+    </section>
+    <%} else {%>
+    <a href="/login" style="display: none" id="loginLink"></a>
+    <script>
+      document.getElementById("loginLink").click();
+    </script>
+    <%}%>
+  </body>
+</html>

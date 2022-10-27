@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= adminName %>'s Room</title>
+    <link rel="shortcut icon" href="#" type="image/x-icon" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&family=Poppins:wght@200;300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      var RoomId = "<%= roomId %>";
+      var MeetingAdmin = "<%= meetingAdmin %>";
+      var Email = "<%= Email %>";
+      var Username = "<%= Username %>";
+      var AdminEmail = "<%= adminEmail %>";
+    </script>
+    <script
+      defer
+      src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"
+    ></script>
+    <script src="/socket.io/socket.io.js" defer></script>
+
+    <style>
+      html {
+        scroll-behavior: smooth;
+      }
+      ::-webkit-scrollbar {
+        width: 10px;
+      }
+      ::-webkit-scrollbar-track {
+        border-radius: 10px;
+        background: rgba(0, 0, 0, 0.048);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgb(155, 155, 155);
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: rgb(110, 110, 110);
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: minmax(75vw, 100vw) 1fr;
+        position: relative;
+      }
+      #room-grid {
+        height: 85vh;
+        max-height: 85vh;
+        max-width: 90vw;
+        margin: 0 5vw;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(18vw, 1fr));
+        grid-auto-rows: 35vh;
+        margin-top: 10px;
+        overflow: hidden;
+        grid-row-gap: 1vh;
+        grid-column-gap: 0.6vw;
+        transition: 0.35s;
+        position: relative;
+      }
+      video {
+        width: 100%;
+        max-height: 85vh;
+        height: fit-content;
+        object-fit: cover;
+        border-radius: 2mm;
+        margin-bottom: 5px;
+      }
+      .videoContent {
+        position: relative;
+        height: fit-content;
+      }
+      .videoContent .userName {
+        position: absolute;
+        font-family: poppins;
+        font-size: medium;
+        font-weight: 500;
+        color: white;
+        bottom: 15px;
+        left: 10px;
+        text-shadow: 0.2mm 0.2mm rgb(72, 72, 72);
+      }
+      .userLogo {
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        font-size: 20px;
+        font-family: "Varela Round";
+        width: 30px;
+        height: 30px;
+        background: rgb(238, 248, 255);
+        border-radius: 50%;
+        text-align: center;
+        line-height: 30px;
+        color: rgb(13, 132, 212);
+        font-weight: bold;
+      }
+      .other-items {
+        width: fit-content;
+        height: 100vh;
+        margin-right: 5px;
+      }
+      #allParticipants {
+        width: 20vw;
+        height: 98%;
+        background: rgb(248, 250, 253);
+        border-radius: 4mm;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        position: relative;
+        overflow: auto;
+        transition: 0.35s;
+        box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 2px 0px,
+          rgba(0, 0, 0, 0.15) 0px 1px 3px 1px;
+        margin-top: 1.5%;
+        display: none;
+      }
+      #allParticipants video {
+        width: 98%;
+        margin-bottom: 5px;
+        margin-left: 1%;
+        margin-top: 10px;
+      }
+      #chat {
+        width: 24vw;
+        height: 98%;
+        background: rgb(248, 250, 253);
+        border-radius: 4mm;
+        display: none;
+        align-items: center;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+        overflow: auto;
+        transition: 0.35s;
+        box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 2px 0px,
+          rgba(0, 0, 0, 0.15) 0px 1px 3px 1px;
+        margin-top: 1.5%;
+        position: relative;
+        overflow: hidden;
+      }
+      .chat-container {
+        flex-basis: auto;
+        flex-grow: 1;
+        width: 100%;
+        overflow-y: auto;
+        position: relative;
+      }
+      #chat form {
+        flex-basis: 7%;
+        max-height: 45px;
+        min-height: 45px;
+        bottom: 0px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgb(204, 234, 254);
+        padding: 15px 0;
+      }
+      #chat form textarea {
+        flex-basis: 70%;
+        width: 100%;
+        outline: none;
+        border: none;
+        background: rgb(248, 250, 253);
+        height: 28px;
+        padding: 0px 18px;
+        padding-top: 7px;
+        border-radius: 5mm;
+        font-family: poppins;
+        font-weight: 500;
+        color: rgb(0, 31, 39);
+        margin-right: 5px;
+        resize: none;
+      }
+      #chat form textarea:focus {
+        background: white;
+      }
+      #chat form textarea::-webkit-scrollbar {
+        width: 5px;
+      }
+      #chat form textarea::-webkit-scrollbar-track {
+        border-radius: 5px;
+        background: rgba(0, 0, 0, 0.048);
+      }
+      #chat form textarea::-webkit-scrollbar-thumb {
+        background: rgb(155, 155, 155);
+        border-radius: 5px;
+      }
+      #chat form textarea::-webkit-scrollbar-thumb:hover {
+        background: rgb(110, 110, 110);
+      }
+      #chat form button {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        background: rgb(0, 31, 39);
+        color: rgb(204, 234, 254);
+        outline: none;
+        border: none;
+        text-align: center;
+        cursor: pointer;
+      }
+      #chat form button span {
+        font-size: x-large;
+        line-height: 30px;
+      }
+      .chat-body {
+        width: 100%;
+        margin-bottom: auto;
+        height: fit-content;
+        max-height: 100%;
+        overflow-y: auto;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+      }
+      .left-msg {
+        float: left;
+        width: 100%;
+      }
+      .msg {
+        width: fit-content;
+        max-width: 75%;
+        border-radius: 5mm;
+        background: rgb(149, 213, 255);
+        color: rgb(0, 31, 39);
+        font-family: poppins;
+        font-weight: 500;
+        font-size: small;
+        padding: 4px 10px;
+        margin-left: 10px;
+        margin-right: 10px;
+        margin-bottom: 5px;
+        overflow-wrap: break-word;
+      }
+      .msg-user {
+        font-size: x-small;
+        font-weight: 500;
+        color: rgba(0, 31, 39, 0.703);
+        font-family: poppins;
+        margin-left: 10px;
+        margin-right: 10px;
+      }
+      .right-msg {
+        float: right;
+        width: 100%;
+      }
+      .right-msg .msg {
+        float: right;
+        background: rgb(223, 232, 245);
+      }
+      .right-msg .msg-user {
+        text-align: right;
+      }
+      .ptitle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+      }
+      .ptitle span {
+        width: 30px;
+        height: 30px;
+        font-size: large;
+        background: rgb(218, 85, 48);
+        color: white;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 30px;
+        font-weight: bold;
+        margin: 3px;
+        cursor: pointer;
+      }
+      #participants {
+        width: 24vw;
+        height: 98%;
+        background: rgb(248, 250, 253);
+        border-radius: 4mm;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+        overflow: auto;
+        transition: 0.35s;
+        box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 2px 0px,
+          rgba(0, 0, 0, 0.15) 0px 1px 3px 1px;
+        margin-top: 1.5%;
+        position: relative;
+        overflow: hidden;
+        display: none;
+      }
+      .users {
+        flex-grow: 1;
+        width: 100%;
+      }
+      .search {
+        position: relative;
+        width: 100;
+        height: fit-content;
+        margin: auto;
+      }
+      .search span {
+        position: absolute;
+        left: 7%;
+        top: 8px;
+        font-size: larger;
+        color: rgba(0, 31, 39, 0.671);
+      }
+      .users #search {
+        max-width: 75%;
+        width: 75%;
+        display: block;
+        margin: auto;
+        padding: 2px 15px;
+        padding-left: 35px;
+        border-radius: 5mm;
+        background: rgb(208, 224, 255);
+        outline: none;
+        border: none;
+        font-family: poppins;
+        font-size: small;
+        font-weight: 400;
+        color: rgb(0, 31, 39);
+        height: 30px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+      .users-body {
+        width: 100%;
+        height: 100%;
+        overflow-y: auto;
+      }
+      .title {
+        font-family: poppins;
+        width: fit-content;
+        padding: 3px 12px;
+        border-radius: 2mm;
+        background: rgb(183, 243, 151);
+        font-size: medium;
+        color: rgb(0, 31, 39);
+        text-align: center;
+        font-weight: 500;
+        border-radius: 5mm;
+        margin: 5px;
+      }
+      .controls {
+        background: rgb(248, 250, 253);
+        width: fit-content;
+        height: 50px;
+        max-height: 15vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        bottom: 5px;
+        left: 5px;
+        padding: 7px 25px;
+        border-radius: 10mm;
+        box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 2px 0px,
+          rgba(0, 0, 0, 0.15) 0px 1px 3px 1px;
+      }
+      .control-btn button {
+        background: transparent;
+        color: rgb(31, 31, 31);
+        border: none;
+        width: 45px;
+        height: 45px;
+        text-align: center;
+        line-height: 45px;
+        border-radius: 50%;
+        outline: none;
+        margin: 0 10px;
+        cursor: pointer;
+        border: 1px solid rgba(31, 31, 31, 0.774);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.25s;
+        position: relative;
+      }
+      .control-btn button span {
+        font-size: 25px;
+      }
+      .red button {
+        background: rgb(231, 95, 59);
+        color: white;
+        border: none;
+      }
+      .other-color button {
+        background: rgb(183, 243, 151);
+        border: none;
+      }
+      .control-btn button:hover {
+        background: rgba(0, 0, 0, 0.089) !important;
+        border: none !important;
+      }
+      .red button:hover {
+        background: rgb(207, 92, 61);
+      }
+      .user {
+        margin: auto;
+        width: 95%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-family: poppins;
+        margin-bottom: 5px;
+      }
+      .user .icon {
+        font-size: large;
+        margin-right: 5px;
+        color: rgba(0, 31, 39, 0.705);
+      }
+      .user .details {
+        display: flex;
+        align-items: center;
+      }
+      .user .userDetails {
+        font-size: small;
+        color: rgb(0, 31, 39);
+      }
+      .user .userMicVid {
+        display: flex;
+        align-items: center;
+      }
+      #notify {
+        position: absolute;
+        right: 0px;
+        top: -4px;
+        color: rgb(0, 31, 39);
+        font-size: medium;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="room-grid"></div>
+    <div class="other-items">
+      <div id="allParticipants">
+        <div class="ptitle">
+          <div class="title">Other Users</div>
+          <span class="material-icons-round" id="otherclose"> close </span>
+        </div>
+      </div>
+      <div id="chat">
+        <div class="ptitle">
+          <div class="title">Chat</div>
+          <span class="material-icons-round" id="chatclose"> close </span>
+        </div>
+        <div class="chat-container">
+          <div class="chat-body" id="chat-body"></div>
+        </div>
+        <form action="">
+          <textarea
+            name="msg"
+            id="msg"
+            placeholder="Type a message..."
+          ></textarea>
+          <button type="button" id="chat-send">
+            <span class="material-icons-outlined"> send </span>
+          </button>
+        </form>
+      </div>
+
+      <div id="participants">
+        <div class="ptitle">
+          <div class="title">All Participants</div>
+          <span class="material-icons-round" id="usersclose"> close </span>
+        </div>
+        <div class="users">
+          <div class="search">
+            <input
+              type="text"
+              name="search"
+              id="search"
+              placeholder="Search participants"
+              onkeyup="searchFunc()"
+            />
+            <span class="material-icons-round"> search </span>
+          </div>
+          <div class="users-body" id="user-body"></div>
+        </div>
+      </div>
+      <div class="controls">
+        <div class="control-btn red">
+          <button type="button" id="call-btn">
+            <span class="material-icons-round"> call_end </span>
+          </button>
+        </div>
+        <div class="control-btn">
+          <button type="button" id="video-btn" onclick="playStop()">
+            <span class="material-icons-outlined"> videocam_off </span>
+          </button>
+        </div>
+        <div class="control-btn">
+          <button type="button" id="mic-btn" onclick="muteUnmute()">
+            <span class="material-icons-outlined"> mic_off </span>
+          </button>
+        </div>
+        <div class="control-btn other-color">
+          <button type="button" id="present-btn">
+            <span class="material-icons-round"> present_to_all </span>
+          </button>
+        </div>
+        <div class="control-btn">
+          <button type="button" id="chat-btn">
+            <span class="material-icons-outlined"> message </span>
+            <span class="material-icons" id="notify">
+              fiber_manual_record
+            </span>
+          </button>
+        </div>
+        <div class="control-btn">
+          <button type="button" id="participants-btn">
+            <span class="material-icons-outlined"> view_list </span>
+          </button>
+        </div>
+        <div class="control-btn">
+          <button type="button" id="allUsers-btn">
+            <span class="material-icons-outlined"> groups </span>
+          </button>
+        </div>
+      </div>
+      <script>
+        //all users tab open and close----------------------------------
+        var all = document.getElementById("allUsers-btn");
+        var allclose = document.getElementById("usersclose");
+        all.onclick = function () {
+          all.style.background = "rgb(194, 231, 255)";
+          all.style.border = "none";
+          document.getElementById("participants").style.display = "flex";
+          setTimeout(() => {
+            document.getElementById("participants").style.transform =
+              "translateX(0)";
+          }, 100);
+        };
+        allclose.onclick = function () {
+          all.style.background = "transparent";
+          all.style.border = "1px solid rgba(31, 31, 31, 0.774)";
+          document.getElementById("participants").style.transform =
+            "translateX(1000px)";
+          setTimeout(() => {
+            document.getElementById("participants").style.display = "none";
+          }, 100);
+        };
+        //all users tab open and close----------------------------------
+
+        //chat tab open and close---------------------------------------
+        var chat = document.getElementById("chat-btn");
+        var chatclose = document.getElementById("chatclose");
+        chat.onclick = function () {
+          document.getElementById("notify").style.display = "none";
+          chat.style.background = "rgb(194, 231, 255)";
+          chat.style.border = "none";
+          document.getElementById("chat").style.display = "flex";
+          setTimeout(() => {
+            document.getElementById("chat").style.transform = "translateX(0)";
+          }, 100);
+        };
+        chatclose.onclick = function () {
+          document.getElementById("notify").style.display = "none";
+          chat.style.background = "transparent";
+          chat.style.border = "1px solid rgba(31, 31, 31, 0.774)";
+          document.getElementById("chat").style.transform =
+            "translateX(1000px)";
+          setTimeout(() => {
+            document.getElementById("chat").style.display = "none";
+          }, 100);
+        };
+        //chat tab open and close---------------------------------------
+
+        //other participants tab open and close-------------------------
+        var otherclose = document.getElementById("otherclose");
+        var parti = document.getElementById("participants-btn");
+        otherclose.onclick = function () {
+          parti.style.background = "transparent";
+          parti.style.border = "1px solid rgba(31, 31, 31, 0.774)";
+          document.getElementById("allParticipants").style.transform =
+            "translateX(1000px)";
+          setTimeout(() => {
+            document.getElementById("allParticipants").style.display = "none";
+          }, 100);
+        };
+        parti.onclick = function () {
+          parti.style.background = "rgb(194, 231, 255)";
+          parti.style.border = "none";
+          document.getElementById("allParticipants").style.display = "flex";
+          setTimeout(() => {
+            document.getElementById("allParticipants").style.transform =
+              "translateX(0)";
+          }, 100);
+        };
+        document.getElementById("call-btn").onclick = function () {
+          window.location.replace("/");
+        };
+        //other participants tab open and close-------------------------
+
+        //video and mic button default styles---------------------------
+        let vid = document.getElementById("video-btn");
+        vid.innerHTML = '<span class="material-icons-outlined">videocam</span>';
+        vid.style.border = "none";
+        vid.style.background = "rgb(194, 231, 255)";
+
+        let mic = document.getElementById("mic-btn");
+        mic.innerHTML =
+          '<span class="material-icons-outlined">keyboard_voice</span>';
+        mic.style.border = "none";
+        mic.style.background = "rgb(194, 231, 255)";
+        //video and mic button default styles---------------------------
+
+        //users tab searching funtion-----------------------------------
+        const searchFunc = () => {
+          var value = document.getElementById("search").value;
+          value = value.toUpperCase();
+          var myContainer = document.getElementById("user-body");
+          var myList = myContainer.querySelectorAll(".userDetails");
+          var list = myContainer.querySelectorAll(".user");
+          for (var i = 0; i < myList.length; i++) {
+            let dataVal = myList[i].innerText;
+            dataVal = dataVal.toUpperCase();
+            if (dataVal.indexOf(value) == -1) {
+              list[i].style.display = "none";
+            } else {
+              list[i].style.display = "flex";
+            }
+          }
+        };
+        //users tab searching funtion-----------------------------------
+      </script>
+    </div>
+  </body>
+  <script src="../public/script.js" defer></script>
+</html>

@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin</title>
+    <link
+      href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&family=Poppins:wght@200;300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <style>
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        overflow-x: hidden;
+        margin: 0;
+        scroll-behavior: smooth;
+      }
+      ::-webkit-scrollbar {
+        width: 10px;
+      }
+      ::-webkit-scrollbar-track {
+        border-radius: 10px;
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgb(155, 155, 155);
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: rgb(110, 110, 110);
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        position: relative;
+        background: rgb(246, 247, 251);
+        width: 100vw;
+        overflow-x: hidden;
+      }
+      .header {
+        width: 100%;
+        padding: 14px 0;
+        display: flex;
+        align-items: center;
+        border-bottom: 0.5mm solid rgba(0, 0, 0, 0.174);
+        position: sticky;
+        top: 0;
+        left: 0;
+        justify-content: space-between;
+        background: white;
+        z-index: 1;
+      }
+      .middle-abs {
+        position: absolute;
+        width: 100%;
+      }
+      .middle {
+        margin: auto;
+        width: fit-content;
+        height: fit-content;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        border-radius: 50%;
+        text-align: center;
+        font-family: "Plus Jakarta Sans";
+        font-size: xx-large;
+      }
+      .middle span {
+        width: 30px;
+        height: 30px;
+        text-align: center;
+        line-height: 30px;
+        background: rgb(20, 121, 203);
+        border-radius: 50%;
+        font-size: 20px;
+        color: white;
+      }
+      .left {
+        float: left;
+        z-index: 2;
+      }
+      .right {
+        z-index: 2;
+      }
+      .left span,
+      .right span {
+        display: block;
+        font-size: 40px;
+        color: rgb(117, 124, 138);
+        margin: 0 10px;
+        cursor: pointer;
+      }
+      .navigation {
+        width: 28vw;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        right: 0;
+        background: white;
+        z-index: 10;
+        box-shadow: -10px 0 10px rgba(0, 0, 0, 0.169);
+        transition: 0.25s;
+        display: none;
+      }
+      .nav-top {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 15px 0;
+        border-bottom: 0.3mm solid rgb(192, 192, 192);
+      }
+      .nav-top-logo {
+        width: fit-content;
+        height: fit-content;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 10px;
+        font-family: poppins;
+        font-size: xx-large;
+      }
+      .nav-top-logo span {
+        width: 30px;
+        height: 30px;
+        font-size: 20px;
+        line-height: 30px;
+        border-radius: 50%;
+        background: rgb(20, 121, 203);
+        color: white;
+        text-align: center;
+      }
+      .nav-top-close {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .nav-top-close span {
+        color: red;
+        font-size: 40px;
+        font-weight: 500;
+      }
+      .nav-body {
+        width: 100%;
+        font-family: "Plus Jakarta Sans";
+      }
+      .nav-body ul {
+        width: 100%;
+        list-style: none;
+        padding: 0;
+      }
+      .nav-body ul li {
+        width: 100%;
+        margin-bottom: 20px;
+      }
+      .nav-body ul li a {
+        width: 100%;
+        text-decoration: none;
+        font-size: 22px;
+        color: rgb(41, 41, 41);
+        display: flex;
+        align-items: center;
+        padding: 10px 0;
+        margin: auto;
+        border-radius: 2mm;
+        letter-spacing: 2px;
+        font-weight: 500;
+      }
+      .nav-body ul li a span {
+        font-size: 26px;
+        color: rgb(41, 41, 41);
+        margin-right: 15px;
+        margin-left: 10px;
+      }
+      .main {
+        width: 100%;
+        position: relative;
+      }
+      .content {
+        margin: auto;
+        width: 90%;
+        position: relative;
+      }
+      .btitle {
+        display: block;
+        font-size: 27px;
+        font-family: poppins;
+        color: rgb(42, 30, 92);
+        font-weight: 500;
+        margin-bottom: 40px;
+        margin-top: 30px;
+      }
+      form {
+        width: 100%;
+      }
+      form span {
+        display: block;
+      }
+      .section {
+        width: 100%;
+        position: relative;
+      }
+      .item {
+        width: 300px;
+        padding: 20px;
+        background: white;
+        border-radius: 3mm;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.174);
+        margin: 15px;
+        position: relative;
+      }
+      .inputf {
+        height: 30;
+        background: white;
+        outline: none;
+        padding: 7px;
+        border-radius: 2mm;
+        font-family: poppins;
+        font-size: medium;
+        margin: 10px 0;
+        outline: 0.5mm solid rgb(77, 77, 77);
+        border: none;
+      }
+      .sInputf {
+        width: 80%;
+        border-radius: 7mm;
+        height: 20px;
+        padding: 10px 20px;
+        margin-bottom: 20px;
+        font-family: poppins;
+        font-size: large;
+        outline: none;
+        border: none;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.174);
+      }
+      .long {
+        width: 97%;
+      }
+      .small {
+        width: 125px;
+      }
+      .itemStats {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-family: poppins;
+      }
+      .items {
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+        flex-wrap: wrap;
+      }
+      .more {
+        font-size: large;
+        font-family: poppins;
+        font-weight: 500;
+        padding: 5px 10px;
+        border-radius: 2mm;
+        background: rgb(20, 121, 203);
+        color: white;
+        outline: none;
+        border: none;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.174);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        margin: auto;
+      }
+      .more span {
+        margin-left: 5px;
+      }
+      .submit {
+        width: 100%;
+        background: rgb(49, 49, 49);
+        color: white;
+        padding: 7px 0;
+        border-radius: 2mm;
+        font-family: "Plus Jakarta Sans";
+        font-weight: 700;
+        font-size: large;
+        box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.174);
+        margin: 15px 0;
+        outline: none;
+        border: none;
+        margin-top: 50px;
+        cursor: pointer;
+      }
+      .close {
+        position: absolute;
+        right: -10px;
+        top: -10px;
+        width: 30px;
+        height: 30px;
+        text-align: center;
+        border-radius: 50%;
+        background: rgb(255, 57, 57);
+        border: none;
+        outline: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+      .close span {
+        font-size: x-large;
+        color: white;
+        text-align: center;
+      }
+      .popup {
+        width: 100vw;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.189);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        display: none;
+        z-index: 20;
+      }
+      .box {
+        width: 350px;
+        padding: 15px;
+        background: white;
+        border-radius: 3mm;
+      }
+      .box-head {
+        font-size: xx-large;
+        font-family: poppins;
+        font-weight: 300;
+        color: rgb(88, 88, 88);
+        text-align: center;
+        margin-bottom: 15px;
+      }
+      .box-body {
+        width: 100%;
+        font-family: poppins;
+        font-size: medium;
+        margin: auto;
+        font-weight: 600;
+      }
+      .box-body span {
+        display: block;
+        font-size: 60px;
+        text-align: center;
+        color: rgb(72, 195, 118);
+        margin-bottom: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <section class="navigation" id="nav">
+      <div class="nav-top">
+        <div class="nav-top-logo">
+          Amaz
+          <span class="material-icons-outlined"> shopping_bag </span>
+          n
+        </div>
+        <div class="nav-top-close" id="nav-close">
+          <span class="material-icons"> close </span>
+        </div>
+      </div>
+      <div class="nav-body">
+        <ul>
+          <li>
+            <a href=""
+              ><span class="material-icons-outlined"> account_circle </span
+              >Profile</a
+            >
+          </li>
+          <li>
+            <a href=""
+              ><span class="material-icons-outlined"> info </span>About</a
+            >
+          </li>
+          <li>
+            <a href=""
+              ><span class="material-icons-outlined"> bug_report </span
+              >Report</a
+            >
+          </li>
+          <li>
+            <a href="/logout"
+              ><span class="material-icons-round"> logout </span>Logout</a
+            >
+          </li>
+        </ul>
+      </div>
+    </section>
+    <section class="header">
+      <div class="left">
+        <span class="material-icons-round backBtn"> arrow_back </span>
+      </div>
+      <div class="middle-abs">
+        <div class="middle">
+          Amaz
+          <span class="material-icons-outlined"> shopping_bag </span>
+          n
+        </div>
+      </div>
+      <div class="right">
+        <span class="material-icons-round menuBtn" id="nav-open"> menu </span>
+      </div>
+    </section>
+    <section class="main">
+      <% if(data) {%>
+      <div class="popup">
+        <div class="box">
+          <div class="box-head"><%=data.head%></div>
+          <div class="box-body">
+            <span class="material-icons-outlined" id="colorit"
+              ><%=data.symbol%></span
+            >
+            <%=data.message %>
+          </div>
+        </div>
+      </div>
+      <%}%>
+      <div class="content">
+        <div class="btitle">Add/Update Items</div>
+        <form action="/products" method="post" id="menuForm">
+          <span class="section" id="Section1">
+            <span class="items">
+              <span class="item">
+                <input
+                  type="text"
+                  name="itemName"
+                  placeholder="Product Name"
+                  class="inputf long pname"
+                  required
+                />
+                <input
+                  type="url"
+                  name="itemImage"
+                  class="inputf long pimg"
+                  placeholder="Drive Url"
+                  required
+                />
+                <span class="itemStats">
+                  <input
+                    type="number"
+                    name="itemPrice"
+                    placeholder="Price"
+                    class="inputf small pprice"
+                    required
+                  />
+                  <input
+                    type="text"
+                    name="itemCategory"
+                    id=""
+                    placeholder="Category"
+                    class="inputf small pcat"
+                    required
+                  />
+                </span>
+                <input
+                  type="text"
+                  name="itemSeller"
+                  id=""
+                  placeholder="Seller Name"
+                  class="inputf long psell"
+                />
+                <span class="itemStats">
+                  <input
+                    type="number"
+                    name="itemOffer"
+                    placeholder="Offer"
+                    class="inputf small poff"
+                  />
+                  <input
+                    type="number"
+                    name="itemRating"
+                    id=""
+                    placeholder="Rating"
+                    class="inputf small prate"
+                    required
+                    step="any"
+                  />
+                </span>
+              </span>
+            </span>
+            <button
+              type="button"
+              class="s1add more"
+              onclick="addItem('Section1','1')"
+              id="addmoreitem"
+            >
+              Add Item <span class="material-icons-outlined"> add </span>
+            </button>
+          </span>
+          <button type="submit" class="submit">Submit</button>
+        </form>
+        <a href="/admin" style="display: none" id="loadbtn"></a>
+      </div>
+    </section>
+    <script>
+      var navOpen = document.getElementById("nav-open");
+      var nav = document.getElementById("nav");
+      var navClose = document.getElementById("nav-close");
+      navOpen.onclick = function () {
+        nav.style.display = "block";
+      };
+      navClose.onclick = function () {
+        nav.style.display = "none";
+      };
+      const addItem = (secId, secNum) => {
+        let section = document.getElementById(secId);
+        let secItems = section.querySelector(".items");
+        secItems.insertAdjacentHTML(
+          "beforeend",
+          '<span class="item"> <button class="close" type="button"><span class="material-icons-outlined"> close </span></button> <input type="text" name="itemName" placeholder="Product Name" class="inputf long pname" required /> <input type="url" name="itemImage" class="inputf long pimg" placeholder="Drive Url" required /> <span class="itemStats"> <input type="number" name="itemPrice" placeholder="Price" class="inputf small pprice" required /> <input type="text" name="itemCategory" id="" placeholder="Category" class="inputf small pcat" required /> </span> <input type="text" name="itemSeller" id="" placeholder="Seller Name" class="inputf long psell" /> <span class="itemStats"> <input type="number" name="itemOffer" placeholder="Offer" class="inputf small poff" /> <input type="number" name="itemRating" id="" placeholder="Rating" class="inputf small prate" required step="any" /> </span> </span>'
+        );
+        let items = document.querySelectorAll(".item");
+        items.forEach((item) => {
+          let close = item.querySelector(".close");
+          if (close) {
+            close.addEventListener("click", (e) => {
+              item.remove();
+            });
+          }
+        });
+      };
+      ("<% if (data) { %>");
+      document.getElementById("colorit").style.color = "<%=data.color %>";
+      document.querySelector(".popup").style.display = "flex";
+      setTimeout(() => {
+        document.querySelector(".popup").style.display = "none";
+        document.getElementById("loadbtn").click();
+      }, 4000);
+      ("<%}%>");
+
+      ("<% if (databody){ %>");
+      ("<% for(var j=0;j<databody.length-1;j++){%>");
+      document.getElementById("addmoreitem").click();
+      var lists = document.querySelectorAll(".item");
+      pnam = document.querySelectorAll(".pname");
+      pimg = document.querySelectorAll(".pimg");
+      pprice = document.querySelectorAll(".pprice");
+      pcat = document.querySelectorAll(".pcat");
+      psell = document.querySelectorAll(".psell");
+      poff = document.querySelectorAll(".poff");
+      prate = document.querySelectorAll(".prate");
+      ("<%}%>");
+      ("<% for(var i=0;i<databody.length;i++){%>");
+      pnam["<%=i%>"].value = "<%=databody[i].itemName%>";
+      ("<%}%>");
+      ("<% for(var i=0;i<databody.length;i++){%>");
+      pimg["<%=i%>"].value = "<%=databody[i].itemImage%>";
+      ("<%}%>");
+      ("<% for(var i=0;i<databody.length;i++){%>");
+      pprice["<%=i%>"].value = "<%=databody[i].itemPrice%>";
+      ("<%}%>");
+      ("<% for(var i=0;i<databody.length;i++){%>");
+      pcat["<%=i%>"].value = "<%=databody[i].itemCategory%>";
+      ("<%}%>");
+      ("<% for(var i=0;i<databody.length;i++){%>");
+      psell["<%=i%>"].value = "<%=databody[i].itemSeller%>";
+      ("<%}%>");
+      ("<% for(var i=0;i<databody.length;i++){%>");
+      poff["<%=i%>"].value = "<%=databody[i].itemOffer%>";
+      ("<%}%>");
+      ("<% for(var i=0;i<databody.length;i++){%>");
+      prate["<%=i%>"].value = "<%=databody[i].itemRating%>";
+
+      ("<%}%>");
+      ("<%}%>");
+    </script>
+  </body>
+</html>

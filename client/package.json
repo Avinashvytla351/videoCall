@@ -1,0 +1,21 @@
+{
+  "dependencies": {
+    "cookie": "^0.5.0",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.0.1",
+    "ejs": "^3.1.8",
+    "express": "^4.18.1",
+    "http": "^0.0.1-security",
+    "node-fetch": "^2.6.7",
+    "peer": "^0.6.1",
+    "socket.io": "^4.5.3",
+    "uuid": "^9.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index",
+    "scss": "node-sass scss/ -o css/"
+  }
+}
