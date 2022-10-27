@@ -259,7 +259,7 @@ app.get("/logout", async (req, res) => {
   res.redirect("/");
 });
 
-server.listen(PORT, function (err) {
+server.listen(process.env.PORT || PORT, function (err) {
   if (err) console.log("Error in client setup");
-  console.log("Client listening on Port", PORT);
+  console.log("Client listening on Port", process.env.PORT || PORT);
 });

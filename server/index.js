@@ -41,10 +41,15 @@ mongoose
     process.exit();
   });
 
+app.get("/", async (req, res) => {
+  res.send("this is server");
+});
 const users = require("./controllers/user.controller.js");
 const rooms = require("./controllers/room.controller.js");
 
 require("./routes/user.route.js")(app);
 require("./routes/room.route.js")(app);
 
-app.listen(PORT, () => console.log("Server @ port", PORT));
+app.listen(process.env.PORT || PORT, () =>
+  console.log("Server @ port", process.env.PORT || PORT)
+);
