@@ -12,7 +12,7 @@ const io = require("socket.io")(server);
 const { v4: uuidV4 } = require("uuid");
 const { PeerServer } = require("peer");
 const peerServer = PeerServer();
-dotenv.config({ path: "../Server/util/config.env" });
+dotenv.config({ path: "../server/util/config.env" });
 
 let serverRoute = process.env.serverAddress;
 let clientRoute = process.env.clientAddress;
@@ -180,6 +180,8 @@ app.get("/:meetingAdmin/:roomId", async (req, res) => {
                 Username: req.cookies.username,
                 adminName: json.data.Username,
                 adminEmail: json.data.Email,
+                clientUrl: clientRoute,
+                serverUr: serverRoute,
               });
             } else {
               res.render("error", { message: json.message });

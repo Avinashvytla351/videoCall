@@ -6,7 +6,7 @@ const moment = require("moment-timezone");
 const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
 const PORT = 7000;
-dotenv.config({ path: "../Server/util/config.env" });
+dotenv.config({ path: "../server/util/config.env" });
 
 const User = require("./models/user.model");
 const Room = require("./models/room.model.js");

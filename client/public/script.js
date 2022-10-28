@@ -1,4 +1,4 @@
-const socket = io.connect("localhost:2000/new");
+const socket = io.connect(clientUrl + "/new");
 const videoGrid = document.getElementById("room-grid");
 const participants = document.getElementById("allParticipants");
 var Peerit;
