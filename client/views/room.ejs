@@ -314,7 +314,7 @@
         margin-top: 1.5%;
         position: relative;
         overflow: hidden;
-        display: none;
+        transform: translateX(1000px);
       }
       .users {
         flex-grow: 1;
@@ -605,7 +605,7 @@
           document.getElementById("allParticipants").style.transform =
             "translateX(1000px)";
           setTimeout(() => {
-            document.getElementById("allParticipants").style.display = "none";
+            document.getElementById("allParticipants").style.display = "flex";
           }, 100);
         };
         parti.onclick = function () {

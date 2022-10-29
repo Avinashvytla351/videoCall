@@ -17,39 +17,67 @@ myVideo.muted = true;
 
 const peers = {};
 var myVideoStream;
-navigator.mediaDevices
-  .getUserMedia({
-    video: true,
-    audio: true,
-  })
-  .then((stream) => {
-    myVideoStream = stream;
-    if (Email === "<%= adminEmail %>") {
-      addVideoStream(myVideo, stream, "You (Admin)");
-    } else {
-      addVideoStream(myVideo, stream, "You");
-    }
+try {
+  navigator.mediaDevices
+    .getUserMedia({
+      video: true,
+      audio: true,
+    })
+    .then((stream) => {
+      myVideoStream = stream;
+      if (Email === "<%= adminEmail %>") {
+        addVideoStream(myVideo, stream, "You (Admin)");
+      } else {
+        addVideoStream(myVideo, stream, "You");
+      }
 
-    myPeer.on("call", (call) => {
-      call.answer(stream);
-      const namePart = call.peer.split("_")[1];
-      const video = document.createElement("video");
-      call.on("stream", (userStream) => {
-        if (namePart) {
-          addVideoStream(video, userStream, namePart);
-        } else {
-          addVideoStream(video, userStream, "Anonymous");
-        }
+      myPeer.on("call", (call) => {
+        call.answer(stream);
+        const namePart = call.peer.split("_")[1];
+        const video = document.createElement("video");
+        call.on("stream", (userStream) => {
+          if (namePart) {
+            addVideoStream(video, userStream, namePart);
+          } else {
+            addVideoStream(video, userStream, "Anonymous");
+          }
+        });
+      });
+
+      socket.on("user-connected", (userVal) => {
+        let requirements = userVal.split(":");
+        let peerId = requirements[0];
+        connectToNewUser(peerId, stream);
       });
     });
+} catch (err) {
+  stream = null;
+  myVideoStream = stream;
+  if (Email === "<%= adminEmail %>") {
+    addVideoStream(myVideo, stream, "You (Admin)");
+  } else {
+    addVideoStream(myVideo, stream, "You");
+  }
 
-    socket.on("user-connected", (userVal) => {
-      let requirements = userVal.split(":");
-      let peerId = requirements[0];
-      connectToNewUser(peerId, stream);
+  myPeer.on("call", (call) => {
+    call.answer(stream);
+    const namePart = call.peer.split("_")[1];
+    const video = document.createElement("video");
+    call.on("stream", (userStream) => {
+      if (namePart) {
+        addVideoStream(video, userStream, namePart);
+      } else {
+        addVideoStream(video, userStream, "Anonymous");
+      }
     });
   });
 
+  socket.on("user-connected", (userVal) => {
+    let requirements = userVal.split(":");
+    let peerId = requirements[0];
+    connectToNewUser(peerId, stream);
+  });
+}
 socket.on("user-disconnected", (userVal) => {
   let requirements = userVal.split(":");
   let peerId = requirements[0];
@@ -122,13 +150,17 @@ const addVideoStream = (video, stream, namePart) => {
 };
 
 const muteUnmute = () => {
-  const enabled = myVideoStream.getAudioTracks()[0].enabled;
-  if (enabled) {
-    myVideoStream.getAudioTracks()[0].enabled = false;
+  try {
+    const enabled = myVideoStream.getAudioTracks()[0].enabled;
+    if (enabled) {
+      myVideoStream.getAudioTracks()[0].enabled = false;
+      setMute();
+    } else {
+      myVideoStream.getAudioTracks()[0].enabled = true;
+      setUnmute();
+    }
+  } catch (err) {
     setMute();
-  } else {
-    myVideoStream.getAudioTracks()[0].enabled = true;
-    setUnmute();
   }
 };
 
@@ -163,13 +195,17 @@ const setMute = () => {
 };
 
 const playStop = () => {
-  const enabled = myVideoStream.getVideoTracks()[0].enabled;
-  if (enabled) {
-    myVideoStream.getVideoTracks()[0].enabled = false;
+  try {
+    const enabled = myVideoStream.getVideoTracks()[0].enabled;
+    if (enabled) {
+      myVideoStream.getVideoTracks()[0].enabled = false;
+      setStop();
+    } else {
+      myVideoStream.getVideoTracks()[0].enabled = true;
+      setPlay();
+    }
+  } catch (err) {
     setStop();
-  } else {
-    myVideoStream.getVideoTracks()[0].enabled = true;
-    setPlay();
   }
 };
 
