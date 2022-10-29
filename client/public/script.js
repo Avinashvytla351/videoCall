@@ -51,7 +51,7 @@ try {
       });
     });
 } catch (err) {
-  stream = null;
+  var stream = null;
   myVideoStream = stream;
   if (Email === "<%= adminEmail %>") {
     addVideoStream(myVideo, stream, "You (Admin)");
