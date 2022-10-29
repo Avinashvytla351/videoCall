@@ -507,6 +507,44 @@
   </head>
   <body>
     <div id="room-grid"></div>
+    <div class="controls">
+      <div class="control-btn red">
+        <button type="button" id="call-btn">
+          <span class="material-icons-round"> call_end </span>
+        </button>
+      </div>
+      <div class="control-btn">
+        <button type="button" id="video-btn" onclick="playStop()">
+          <span class="material-icons-outlined"> videocam_off </span>
+        </button>
+      </div>
+      <div class="control-btn">
+        <button type="button" id="mic-btn" onclick="muteUnmute()">
+          <span class="material-icons-outlined"> mic_off </span>
+        </button>
+      </div>
+      <div class="control-btn other-color">
+        <button type="button" id="present-btn">
+          <span class="material-icons-round"> present_to_all </span>
+        </button>
+      </div>
+      <div class="control-btn">
+        <button type="button" id="chat-btn">
+          <span class="material-icons-outlined"> message </span>
+          <span class="material-icons" id="notify"> fiber_manual_record </span>
+        </button>
+      </div>
+      <div class="control-btn">
+        <button type="button" id="participants-btn">
+          <span class="material-icons-outlined"> view_list </span>
+        </button>
+      </div>
+      <div class="control-btn">
+        <button type="button" id="allUsers-btn">
+          <span class="material-icons-outlined"> groups </span>
+        </button>
+      </div>
+    </div>
     <div class="other-items">
       <div id="allParticipants">
         <div class="ptitle">
@@ -551,46 +589,6 @@
             <span class="material-icons-round"> search </span>
           </div>
           <div class="users-body" id="user-body"></div>
-        </div>
-      </div>
-      <div class="controls">
-        <div class="control-btn red">
-          <button type="button" id="call-btn">
-            <span class="material-icons-round"> call_end </span>
-          </button>
-        </div>
-        <div class="control-btn">
-          <button type="button" id="video-btn" onclick="playStop()">
-            <span class="material-icons-outlined"> videocam_off </span>
-          </button>
-        </div>
-        <div class="control-btn">
-          <button type="button" id="mic-btn" onclick="muteUnmute()">
-            <span class="material-icons-outlined"> mic_off </span>
-          </button>
-        </div>
-        <div class="control-btn other-color">
-          <button type="button" id="present-btn">
-            <span class="material-icons-round"> present_to_all </span>
-          </button>
-        </div>
-        <div class="control-btn">
-          <button type="button" id="chat-btn">
-            <span class="material-icons-outlined"> message </span>
-            <span class="material-icons" id="notify">
-              fiber_manual_record
-            </span>
-          </button>
-        </div>
-        <div class="control-btn">
-          <button type="button" id="participants-btn">
-            <span class="material-icons-outlined"> view_list </span>
-          </button>
-        </div>
-        <div class="control-btn">
-          <button type="button" id="allUsers-btn">
-            <span class="material-icons-outlined"> groups </span>
-          </button>
         </div>
       </div>
       <script>
