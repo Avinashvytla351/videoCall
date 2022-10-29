@@ -17,6 +17,39 @@ myVideo.muted = true;
 
 const peers = {};
 var myVideoStream;
+
+const addVideoStream = (video, stream, namePart) => {
+  let add = document.createElement("div");
+  add.className = "videoContent";
+  video.srcObject = stream;
+  if (!stream) {
+    video.style.background = "black";
+  }
+  video.addEventListener("loadedmetadata", () => {
+    video.play();
+  });
+  add.append(video);
+  add.insertAdjacentHTML(
+    "beforeend",
+    "<span class='userName'>" + namePart + "</span>"
+  );
+  add.insertAdjacentHTML(
+    "beforeend",
+    "<span class='userLogo'>" + namePart[0] + "</span>"
+  );
+  if (videoGrid.querySelectorAll(".videoContent").length > 12) {
+    participants.append(add);
+  } else {
+    videoGrid.append(add);
+  }
+  let check = document.querySelectorAll(".videoContent");
+  check.forEach((item) => {
+    if (item.getElementsByTagName("video").length == 0) {
+      item.remove();
+    }
+  });
+};
+
 try {
   navigator.mediaDevices
     .getUserMedia({
@@ -24,6 +57,34 @@ try {
       audio: true,
     })
     .then((stream) => {
+      myVideoStream = stream;
+      if (Email === "<%= adminEmail %>") {
+        addVideoStream(myVideo, stream, "You (Admin)");
+      } else {
+        addVideoStream(myVideo, stream, "You");
+      }
+
+      myPeer.on("call", (call) => {
+        call.answer(stream);
+        const namePart = call.peer.split("_")[1];
+        const video = document.createElement("video");
+        call.on("stream", (userStream) => {
+          if (namePart) {
+            addVideoStream(video, userStream, namePart);
+          } else {
+            addVideoStream(video, userStream, "Anonymous");
+          }
+        });
+      });
+
+      socket.on("user-connected", (userVal) => {
+        let requirements = userVal.split(":");
+        let peerId = requirements[0];
+        connectToNewUser(peerId, stream);
+      });
+    })
+    .catch((err) => {
+      var stream = null;
       myVideoStream = stream;
       if (Email === "<%= adminEmail %>") {
         addVideoStream(myVideo, stream, "You (Admin)");
@@ -118,35 +179,6 @@ const connectToNewUser = (peerId, stream) => {
     });
   });
   peers[peerId] = call;
-};
-
-const addVideoStream = (video, stream, namePart) => {
-  let add = document.createElement("div");
-  add.className = "videoContent";
-  video.srcObject = stream;
-  video.addEventListener("loadedmetadata", () => {
-    video.play();
-  });
-  add.append(video);
-  add.insertAdjacentHTML(
-    "beforeend",
-    "<span class='userName'>" + namePart + "</span>"
-  );
-  add.insertAdjacentHTML(
-    "beforeend",
-    "<span class='userLogo'>" + namePart[0] + "</span>"
-  );
-  if (videoGrid.querySelectorAll(".videoContent").length > 12) {
-    participants.append(add);
-  } else {
-    videoGrid.append(add);
-  }
-  let check = document.querySelectorAll(".videoContent");
-  check.forEach((item) => {
-    if (item.getElementsByTagName("video").length == 0) {
-      item.remove();
-    }
-  });
 };
 
 const muteUnmute = () => {
