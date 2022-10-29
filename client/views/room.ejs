@@ -63,7 +63,7 @@
         height: 100vh;
         overflow: hidden;
         display: grid;
-        grid-template-columns: minmax(75vw, 100vw) 1fr !important;
+        grid-template-columns: minmax(75vw, 100vw) 1fr;
         position: relative;
       }
       #room-grid {
@@ -138,6 +138,7 @@
           rgba(0, 0, 0, 0.15) 0px 1px 3px 1px;
         margin-top: 1.5%;
         display: none;
+        transform: translateX(1000px);
       }
       #allParticipants video {
         width: 98%;
@@ -162,6 +163,7 @@
         margin-top: 1.5%;
         position: relative;
         overflow: hidden;
+        transform: translateX(1000px);
       }
       .chat-container {
         flex-basis: auto;
@@ -314,6 +316,8 @@
         margin-top: 1.5%;
         position: relative;
         overflow: hidden;
+        display: none;
+        transform: translateX(1000px);
       }
       .users {
         flex-grow: 1;
@@ -461,7 +465,7 @@
   </head>
   <body>
     <div id="room-grid"></div>
-    <div class="other-items" id="other-items">
+    <div class="other-items">
       <div id="allParticipants">
         <div class="ptitle">
           <div class="title">Other Users</div>
@@ -554,7 +558,6 @@
         all.onclick = function () {
           all.style.background = "rgb(194, 231, 255)";
           all.style.border = "none";
-          document.getElementById("other-items").style.width = "fit-content";
           document.getElementById("participants").style.display = "flex";
           setTimeout(() => {
             document.getElementById("participants").style.transform =
@@ -564,11 +567,10 @@
         allclose.onclick = function () {
           all.style.background = "transparent";
           all.style.border = "1px solid rgba(31, 31, 31, 0.774)";
-          document.getElementById("other-items").style.width = 0;
           document.getElementById("participants").style.transform =
             "translateX(1000px)";
           setTimeout(() => {
-            document.getElementById("participants").style.display = "flex";
+            document.getElementById("participants").style.display = "none";
           }, 100);
         };
         //all users tab open and close----------------------------------
@@ -578,7 +580,6 @@
         var chatclose = document.getElementById("chatclose");
         chat.onclick = function () {
           document.getElementById("notify").style.display = "none";
-          document.getElementById("other-items").style.width = "fit-content";
           chat.style.background = "rgb(194, 231, 255)";
           chat.style.border = "none";
           document.getElementById("chat").style.display = "flex";
@@ -587,7 +588,6 @@
           }, 100);
         };
         chatclose.onclick = function () {
-          document.getElementById("other-items").style.width = 0;
           document.getElementById("notify").style.display = "none";
           chat.style.background = "transparent";
           chat.style.border = "1px solid rgba(31, 31, 31, 0.774)";
@@ -603,7 +603,6 @@
         var otherclose = document.getElementById("otherclose");
         var parti = document.getElementById("participants-btn");
         otherclose.onclick = function () {
-          document.getElementById("other-items").style.width = 0;
           parti.style.background = "transparent";
           parti.style.border = "1px solid rgba(31, 31, 31, 0.774)";
           document.getElementById("allParticipants").style.transform =
@@ -613,7 +612,6 @@
           }, 100);
         };
         parti.onclick = function () {
-          document.getElementById("other-items").style.width = "20vw";
           parti.style.background = "rgb(194, 231, 255)";
           parti.style.border = "none";
           document.getElementById("allParticipants").style.display = "flex";
