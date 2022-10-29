@@ -262,6 +262,44 @@
       .notice .content span {
         margin-right: 5px;
       }
+      @media screen and (max-width: 700px) {
+        body {
+          width: 100vw;
+          display: flex;
+          align-items: center;
+          flex-direction: column;
+          justify-content: space-between;
+          height: 100vh;
+        }
+        .left {
+          width: 100%;
+          height: fit-content;
+          min-height: fit-content;
+          flex-grow: 1;
+        }
+        .right {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: row;
+          width: 100%;
+          flex-wrap: nowrap;
+          height: fit-content;
+        }
+        .symbols {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-wrap: nowrap;
+          width: fit-content;
+        }
+        .symbols span {
+          font-size: 60px;
+        }
+        .symbols:nth-child(3) {
+          display: none;
+        }
+      }
     </style>
   </head>
   <body>
