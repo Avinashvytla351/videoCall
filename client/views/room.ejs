@@ -734,14 +734,23 @@
         let conClose = document.getElementById("control-close");
         let controls = document.getElementById("all-controls");
         var conOpen;
+        var wwidth = window.innerWidth;
         conClose.onclick = function () {
-          controls.style.width = "12px";
+          if (wwidth > 700) {
+            controls.style.width = "12px";
+          } else {
+            controls.style.flexWrap = "nowrap";
+            controls.style.width = "35px";
+          }
           controls.style.transform = "rotateX(180deg)";
           conClose.style.display = "none";
           document.querySelector(".other-color").innerHTML =
             '<button type="button" id="controls-open"><span class="material-icons-round"> fullscreen </span></button>';
           conOpen = document.getElementById("controls-open");
           conOpen.addEventListener("click", () => {
+            if (wwidth < 700) {
+              controls.style.flexWrap = "wrap";
+            }
             controls.style.width = "700px";
             controls.style.transform = "rotateX(0deg) translate(-50%, 0)";
             conClose.style.display = "block";
