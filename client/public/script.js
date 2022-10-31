@@ -200,7 +200,7 @@ const setUnmute = () => {
   let mic = document.getElementById("mic-btn");
   mic.innerHTML = '<span class="material-icons-outlined">keyboard_voice</span>';
   mic.style.border = "none";
-  mic.style.background = "rgb(194, 231, 255)";
+  mic.style.background = "rgb(1, 87, 140)";
   if (socket.id) {
     socket.emit("mic-change", socket.id, "keyboard_voice");
     socket.on("mic-changed", (data) => {
@@ -214,8 +214,7 @@ const setUnmute = () => {
 const setMute = () => {
   let mic = document.getElementById("mic-btn");
   mic.innerHTML = '<span class="material-icons-outlined">mic_off</span>';
-  mic.style.border = "1px solid rgba(31, 31, 31, 0.774)";
-  mic.style.background = "transparent";
+  mic.style.background = "rgba(255, 255, 255, 0.15)";
   if (socket.id) {
     socket.emit("mic-change", socket.id, "mic_off");
     socket.on("mic-changed", (data) => {
@@ -245,7 +244,7 @@ const setPlay = () => {
   let vid = document.getElementById("video-btn");
   vid.innerHTML = '<span class="material-icons-outlined">videocam</span>';
   vid.style.border = "none";
-  vid.style.background = "rgb(194, 231, 255)";
+  vid.style.background = "rgb(1, 87, 140)";
   if (socket.id) {
     socket.emit("vid-change", socket.id, "videocam");
     socket.on("vid-changed", (data) => {
@@ -259,8 +258,7 @@ const setPlay = () => {
 const setStop = () => {
   let vid = document.getElementById("video-btn");
   vid.innerHTML = '<span class="material-icons-outlined">videocam_off</span>';
-  vid.style.border = "1px solid rgba(31, 31, 31, 0.774)";
-  vid.style.background = "transparent";
+  vid.style.background = "rgba(255, 255, 255, 0.15)";
   if (socket.id) {
     socket.emit("vid-change", socket.id, "videocam_off");
     socket.on("vid-changed", (data) => {
