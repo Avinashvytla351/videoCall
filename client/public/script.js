@@ -11,13 +11,13 @@ if (Email) {
     port: "443",
   });
 }
+var ssp = [];
 const myPeer = Peerit;
 const myVideo = document.createElement("video");
 myVideo.muted = true;
 
 const peers = {};
 var myVideoStream;
-
 const addVideoStream = (video, stream, namePart) => {
   let add = document.createElement("div");
   add.className = "videoContent";
@@ -50,6 +50,10 @@ const addVideoStream = (video, stream, namePart) => {
   });
 };
 
+myPeer.on("open", (peerId) => {
+  socket.emit("join-room", RoomId, MeetingAdmin, Email, Username, peerId);
+});
+
 try {
   navigator.mediaDevices
     .getUserMedia({
@@ -63,7 +67,6 @@ try {
       } else {
         addVideoStream(myVideo, stream, "You");
       }
-
       myPeer.on("call", (call) => {
         call.answer(stream);
         const namePart = call.peer.split("_")[1];
@@ -74,6 +77,7 @@ try {
           } else {
             addVideoStream(video, userStream, "Anonymous");
           }
+          ssp.push(call.peerConnection);
         });
       });
 
@@ -102,6 +106,7 @@ try {
           } else {
             addVideoStream(video, userStream, "Anonymous");
           }
+          ssp.push(call.peerConnection);
         });
       });
 
@@ -130,6 +135,7 @@ try {
       } else {
         addVideoStream(video, userStream, "Anonymous");
       }
+      ssp.push(call.peerConnection);
     });
   });
 
@@ -149,10 +155,6 @@ socket.on("user-disconnected", (userVal) => {
   }
 });
 
-myPeer.on("open", (peerId) => {
-  socket.emit("join-room", RoomId, MeetingAdmin, Email, Username, peerId);
-});
-
 const connectToNewUser = (peerId, stream) => {
   if (peers[peerId]) {
     peers[peerId].close();
@@ -167,6 +169,7 @@ const connectToNewUser = (peerId, stream) => {
     } else {
       addVideoStream(video, userStream, "Anonymous");
     }
+    ssp.push(call.peerConnection);
   });
 
   call.on("close", () => {
@@ -377,4 +380,40 @@ socket.on("roomData", (userDetails) => {
       document.getElementById("user-body").append(userDiv);
     }
   });
+});
+
+const stopScreenShare = () => {
+  let videoTrack = myVideoStream.getVideoTracks()[0];
+  ssp.forEach((item) => {
+    let sender = item.getSenders().find(function (s) {
+      return s.track.kind == videoTrack.kind;
+    });
+    sender.replaceTrack(videoTrack);
+  });
+};
+
+document.getElementById("present-btn").addEventListener("click", (e) => {
+  navigator.mediaDevices
+    .getDisplayMedia({
+      video: { cursor: "always" },
+      audio: {
+        echoCancellation: true,
+        noiseSuppression: true,
+      },
+    })
+    .then((screenStream) => {
+      let videoTrack = screenStream.getVideoTracks()[0];
+      videoTrack.onended = function () {
+        stopScreenShare();
+      };
+      ssp.forEach((item) => {
+        let sender = item.getSenders().find(function (s) {
+          return s.track.kind == videoTrack.kind;
+        });
+        sender.replaceTrack(videoTrack);
+      });
+    })
+    .catch((err) => {
+      console.log("cannot share screen", err);
+    });
 });

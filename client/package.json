@@ -15,7 +15,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js",
+    "start": "nodemon index.js",
     "start:dev": "nodemon index.js",
     "scss": "node-sass scss/ -o css/"
   }
