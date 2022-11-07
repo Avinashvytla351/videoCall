@@ -18,9 +18,10 @@ myVideo.muted = true;
 
 const peers = {};
 var myVideoStream;
-const addVideoStream = (video, stream, namePart) => {
+const addVideoStream = (video, stream, namePart, peerPart) => {
   let add = document.createElement("div");
   add.className = "videoContent";
+  add.id = peerPart;
   video.srcObject = stream;
   if (!stream) {
     video.style.background = "black";
@@ -63,19 +64,20 @@ try {
     .then((stream) => {
       myVideoStream = stream;
       if (Email === "<%= adminEmail %>") {
-        addVideoStream(myVideo, stream, "You (Admin)");
+        addVideoStream(myVideo, stream, "You (Admin)", "");
       } else {
-        addVideoStream(myVideo, stream, "You");
+        addVideoStream(myVideo, stream, "You", "");
       }
       myPeer.on("call", (call) => {
         call.answer(stream);
+        const peerPart = call.peer.split("_")[0];
         const namePart = call.peer.split("_")[1];
         const video = document.createElement("video");
         call.on("stream", (userStream) => {
           if (namePart) {
-            addVideoStream(video, userStream, namePart);
+            addVideoStream(video, userStream, namePart, peerPart);
           } else {
-            addVideoStream(video, userStream, "Anonymous");
+            addVideoStream(video, userStream, "Anonymous", peerPart);
           }
           ssp.push(call.peerConnection);
         });
@@ -98,13 +100,14 @@ try {
 
       myPeer.on("call", (call) => {
         call.answer(stream);
+        const peerPart = call.peer.split("_")[0];
         const namePart = call.peer.split("_")[1];
         const video = document.createElement("video");
         call.on("stream", (userStream) => {
           if (namePart) {
-            addVideoStream(video, userStream, namePart);
+            addVideoStream(video, userStream, namePart, peerPart);
           } else {
-            addVideoStream(video, userStream, "Anonymous");
+            addVideoStream(video, userStream, "Anonymous", peerPart);
           }
           ssp.push(call.peerConnection);
         });
@@ -127,13 +130,14 @@ try {
 
   myPeer.on("call", (call) => {
     call.answer(stream);
+    const peerPart = call.peer.split("_")[0];
     const namePart = call.peer.split("_")[1];
     const video = document.createElement("video");
     call.on("stream", (userStream) => {
       if (namePart) {
-        addVideoStream(video, userStream, namePart);
+        addVideoStream(video, userStream, namePart, peerPart);
       } else {
-        addVideoStream(video, userStream, "Anonymous");
+        addVideoStream(video, userStream, "Anonymous", peerPart);
       }
       ssp.push(call.peerConnection);
     });
@@ -162,12 +166,13 @@ const connectToNewUser = (peerId, stream) => {
   const call = myPeer.call(peerId, stream);
   const video = document.createElement("video");
   let namePart = peerId.split("_");
+  let peerPart = namePart[0];
   namePart = namePart[1];
   call.on("stream", (userStream) => {
     if (namePart) {
-      addVideoStream(video, userStream, namePart);
+      addVideoStream(video, userStream, namePart, peerPart);
     } else {
-      addVideoStream(video, userStream, "Anonymous");
+      addVideoStream(video, userStream, "Anonymous", peerPart);
     }
     ssp.push(call.peerConnection);
   });
@@ -412,8 +417,40 @@ document.getElementById("present-btn").addEventListener("click", (e) => {
         });
         sender.replaceTrack(videoTrack);
       });
+      myVideo.srcObject = screenStream;
+      myVideo.addEventListener("loadedmetadata", () => {
+        myVideo.play();
+      });
+      socket.emit("screenSharing", "cancel_presentation");
+      document.getElementById("present-btn").className = "temp";
     })
     .catch((err) => {
       console.log("cannot share screen", err);
     });
+});
+
+socket.on("screenShared", (data) => {
+  let allVideos = videoGrid.querySelectorAll(".videoContent");
+  let checkId = data.idVal.split("_")[0];
+  allVideos.forEach((video) => {
+    if (video.id == checkId) {
+      video.style.display = "block";
+      video.style.width = "fit-content";
+    } else {
+      video.style.display = "none";
+    }
+  });
+  let buttonVal = document
+    .getElementById("present-btn")
+    .querySelector(".material-icons-round");
+  buttonVal.innerHTML = data.icon;
+  if (!(document.getElementById("present-btn").className == "temp")) {
+    document.getElementById("present-btn").style.background =
+      "rgba(255, 255, 255, 0.089)";
+    document.getElementById("present-btn").disabled = true;
+  } else {
+    document.getElementById("present-btn").style.background =
+      "rgb(231, 95, 59)";
+    allVideos[0].style.display = "block";
+  }
 });

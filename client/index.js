@@ -251,6 +251,12 @@ io.of("/new").on("connection", function (socket) {
         .to(roomVal)
         .emit("vid-changed", { peerId: peerId, user: getUser(id) });
     });
+
+    socket.on("screenSharing", (iconValue) => {
+      io.of("/new")
+        .to(roomVal)
+        .emit("screenShared", { idVal: peerId, icon: iconValue });
+    });
   });
 });
 
