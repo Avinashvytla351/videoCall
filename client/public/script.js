@@ -395,6 +395,8 @@ const stopScreenShare = () => {
     });
     sender.replaceTrack(videoTrack);
   });
+  document.getElementById("ssAlert").style.display = "none";
+  socket.emit("screenStopping", "present_to_all");
 };
 
 document.getElementById("present-btn").addEventListener("click", (e) => {
@@ -417,12 +419,9 @@ document.getElementById("present-btn").addEventListener("click", (e) => {
         });
         sender.replaceTrack(videoTrack);
       });
-      myVideo.srcObject = screenStream;
-      myVideo.addEventListener("loadedmetadata", () => {
-        myVideo.play();
-      });
       socket.emit("screenSharing", "cancel_presentation");
       document.getElementById("present-btn").className = "temp";
+      document.getElementById("ssAlert").style.display = "flex";
     })
     .catch((err) => {
       console.log("cannot share screen", err);
@@ -432,6 +431,17 @@ document.getElementById("present-btn").addEventListener("click", (e) => {
 socket.on("screenShared", (data) => {
   let allVideos = videoGrid.querySelectorAll(".videoContent");
   let checkId = data.idVal.split("_")[0];
+  let userName = data.idVal.split("_")[1];
+  if (userName) {
+  } else {
+    userName = "Anonymous";
+  }
+  let alert = document.getElementById("ssAlert2");
+  alert.innerHTML =
+    '<span class="material-icons-outlined"> present_to_all </span>' +
+    userName +
+    " started sharing the screen";
+
   allVideos.forEach((video) => {
     if (video.id == checkId) {
       video.style.display = "block";
@@ -444,13 +454,44 @@ socket.on("screenShared", (data) => {
     .getElementById("present-btn")
     .querySelector(".material-icons-round");
   buttonVal.innerHTML = data.icon;
-  if (!(document.getElementById("present-btn").className == "temp")) {
-    document.getElementById("present-btn").style.background =
-      "rgba(255, 255, 255, 0.089)";
-    document.getElementById("present-btn").disabled = true;
+  document.getElementById("present-btn").style.background =
+    "rgba(255, 255, 255, 0.089)";
+  document.getElementById("present-btn").disabled = true;
+  /*if (!(document.getElementById("present-btn").className == "temp")) {
   } else {
-    document.getElementById("present-btn").style.background =
-      "rgb(231, 95, 59)";
-    allVideos[0].style.display = "block";
+  }*/
+  alert.style.transform = "translate(-50%, 0)";
+  setTimeout(() => {
+    alert.style.transform = "translate(-50%, -300px)";
+  }, 3000);
+});
+
+socket.on("screenStopped", (data) => {
+  let userName = data.idVal.split("_")[1];
+  if (userName) {
+  } else {
+    userName = "Anonymous";
   }
+  let alert = document.getElementById("ssAlert2");
+  alert.innerHTML =
+    '<span class="material-icons-outlined"> present_to_all </span>' +
+    userName +
+    " stopped sharing the screen";
+
+  let allVideos = videoGrid.querySelectorAll(".videoContent");
+  allVideos.forEach((video) => {
+    video.style.display = "block";
+    video.style.width = "100%";
+  });
+  let buttonVal = document
+    .getElementById("present-btn")
+    .querySelector(".material-icons-round");
+  buttonVal.innerHTML = data.icon;
+  document.getElementById("present-btn").style.background = "rgb(183,243,151)";
+  document.getElementById("present-btn").disabled = false;
+
+  alert.style.transform = "translate(-50%, 0)";
+  setTimeout(() => {
+    alert.style.transform = "translate(-50%, -300px)";
+  }, 3000);
 });

@@ -257,6 +257,11 @@ io.of("/new").on("connection", function (socket) {
         .to(roomVal)
         .emit("screenShared", { idVal: peerId, icon: iconValue });
     });
+    socket.on("screenStopping", (iconValue) => {
+      io.of("/new")
+        .to(roomVal)
+        .emit("screenStopped", { idVal: peerId, icon: iconValue });
+    });
   });
 });
 
