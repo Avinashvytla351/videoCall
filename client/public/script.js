@@ -43,6 +43,13 @@ const addVideoStream = (video, stream, namePart, peerPart) => {
   } else {
     videoGrid.append(add);
   }
+  let vhe = video.offsetHeight;
+  let vwe = video.offsetWidth;
+  if (vhe < vwe) {
+    video.style.height = "100%";
+  } else {
+    video.style.width = "100%";
+  }
   let check = document.querySelectorAll(".videoContent");
   check.forEach((item) => {
     if (item.getElementsByTagName("video").length == 0) {
