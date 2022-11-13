@@ -11,6 +11,28 @@ if (Email) {
     port: "443",
   });
 }
+var dish;
+window.addEventListener(
+  "load",
+  function () {
+    // select parent of dish
+    let scenary = document.getElementsByClassName("Scenary")[0];
+
+    // create dish
+    dish = new Sizer(scenary);
+
+    // resize the cameras
+    dish.resize();
+
+    // resize event of window
+    window.addEventListener("resize", function () {
+      // resize event to dimension cameras
+      dish.resize();
+    });
+  },
+  false
+);
+
 var ssp = [];
 const myPeer = Peerit;
 const myVideo = document.createElement("video");
@@ -43,19 +65,14 @@ const addVideoStream = (video, stream, namePart, peerPart) => {
   } else {
     videoGrid.append(add);
   }
-  let vhe = video.offsetHeight;
-  let vwe = video.offsetWidth;
-  if (vhe < vwe) {
-    video.style.height = "100%";
-  } else {
-    video.style.width = "100%";
-  }
   let check = document.querySelectorAll(".videoContent");
   check.forEach((item) => {
     if (item.getElementsByTagName("video").length == 0) {
       item.remove();
     }
   });
+
+  dish.resize();
 };
 
 myPeer.on("open", (peerId) => {
