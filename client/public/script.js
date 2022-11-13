@@ -181,11 +181,13 @@ socket.on("user-disconnected", (userVal) => {
     document.getElementById(userPeerId).remove();
     peers[peerId].close();
   }
+  dish.resize();
 });
 
 const connectToNewUser = (peerId, stream) => {
   if (peers[peerId]) {
     peers[peerId].close();
+    dish.resize();
   }
   const call = myPeer.call(peerId, stream);
   const video = document.createElement("video");
