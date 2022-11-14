@@ -1,5 +1,5 @@
 class Sizer {
-  _ratios = ["4:3", "16:9", "1:1", "1:2"];
+  _ratios = ["4:3", "16:9", "1:1", "1:2", "10:7"];
 
   // default options
   _dish = false;
@@ -41,7 +41,6 @@ class Sizer {
   resize() {
     // get dimensions of dish
     this.dimensions();
-
     // loop (i recommend you optimize this)
     let max = 0;
     let i = 1;
@@ -65,7 +64,7 @@ class Sizer {
     let i = 0;
     let w = 0;
     let h = increment * this._ratio + this._margin * 2;
-    while (i < this._dish.children.length) {
+    while (i < this._dish.children.length - 1) {
       if (w + increment > this._width) {
         w = 0;
         h = h + increment * this._ratio + this._margin * 2;
@@ -73,7 +72,8 @@ class Sizer {
       w = w + increment + this._margin * 2;
       i++;
     }
-    if (h > this._height || increment > this._width) return false;
-    else return increment;
+    if (h > this._height || increment > this._width) {
+      return false;
+    } else return increment;
   }
 }

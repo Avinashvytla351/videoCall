@@ -1,6 +1,7 @@
 const socket = io.connect(clientUrl + "/new");
 const videoGrid = document.getElementById("room-grid");
 const participants = document.getElementById("allParticipants");
+const spareGrid = document.getElementById("spare-grid");
 var Peerit;
 if (Email) {
   const Idval = Email + "_" + Username;
@@ -473,7 +474,7 @@ socket.on("screenShared", (data) => {
       video.style.display = "block";
       video.style.width = "fit-content";
     } else {
-      video.style.display = "none";
+      spareGrid.append(video);
     }
   });
   let buttonVal = document
@@ -486,6 +487,9 @@ socket.on("screenShared", (data) => {
   /*if (!(document.getElementById("present-btn").className == "temp")) {
   } else {
   }*/
+  dish._ratio = 17 / 30.5;
+  dish._aspect = 4;
+  dish.resize();
   alert.style.transform = "translate(-50%, 0)";
   setTimeout(() => {
     alert.style.transform = "translate(-50%, -300px)";
@@ -504,10 +508,9 @@ socket.on("screenStopped", (data) => {
     userName +
     " stopped sharing the screen";
 
-  let allVideos = videoGrid.querySelectorAll(".videoContent");
+  let allVideos = spareGrid.querySelectorAll(".videoContent");
   allVideos.forEach((video) => {
-    video.style.display = "block";
-    video.style.width = "100%";
+    videoGrid.append(video);
   });
   let buttonVal = document
     .getElementById("present-btn")
@@ -520,4 +523,7 @@ socket.on("screenStopped", (data) => {
   setTimeout(() => {
     alert.style.transform = "translate(-50%, -300px)";
   }, 3000);
+  dish._ratio = 3 / 4;
+  dish._aspect = 0;
+  dish.resize();
 });
