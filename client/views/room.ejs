@@ -97,10 +97,7 @@
         top: 0;
         background-size: cover;
         overflow: hidden;
-        -webkit-transition: margin-top 1s ease-in-out;
-        -moz-transition: margin-top 1s ease-in-out;
-        -o-transition: margin-top 1s ease-in-out;
-        transition: margin-top 1s ease-in-out;
+        transition: 0.25s;
       }
       .videoContent {
         height: fit-content;
@@ -111,6 +108,7 @@
         border-radius: 10px;
         overflow: hidden;
         display: inline-block;
+        transition: 0.25s;
       }
       .videoContent .userName {
         position: absolute;
@@ -714,6 +712,7 @@
           setTimeout(() => {
             document.getElementById("participants").style.transform =
               "translateX(0)";
+            dish.resize();
           }, 100);
         };
         allclose.onclick = function () {
@@ -722,6 +721,7 @@
             "translateX(1000px)";
           setTimeout(() => {
             document.getElementById("participants").style.display = "none";
+            dish.resize();
           }, 100);
         };
         //all users tab open and close----------------------------------
@@ -736,6 +736,7 @@
           document.getElementById("chat").style.display = "flex";
           setTimeout(() => {
             document.getElementById("chat").style.transform = "translateX(0)";
+            dish.resize();
           }, 100);
         };
         chatclose.onclick = function () {
@@ -745,6 +746,7 @@
             "translateX(1000px)";
           setTimeout(() => {
             document.getElementById("chat").style.display = "none";
+            dish.resize();
           }, 100);
         };
         //chat tab open and close---------------------------------------
@@ -758,6 +760,7 @@
             "translateX(1000px)";
           setTimeout(() => {
             document.getElementById("allParticipants").style.display = "none";
+            dish.resize();
           }, 100);
         };
         parti.onclick = function () {
@@ -767,6 +770,7 @@
           setTimeout(() => {
             document.getElementById("allParticipants").style.transform =
               "translateX(0)";
+            dish.resize();
           }, 100);
         };
         document.getElementById("call-btn").onclick = function () {

@@ -2,6 +2,8 @@ const socket = io.connect(clientUrl + "/new");
 const videoGrid = document.getElementById("room-grid");
 const participants = document.getElementById("allParticipants");
 const spareGrid = document.getElementById("spare-grid");
+const winWidth = window.innerWidth;
+const winHeight = window.innerHeight;
 var Peerit;
 if (Email) {
   const Idval = Email + "_" + Username;
@@ -487,7 +489,7 @@ socket.on("screenShared", (data) => {
   /*if (!(document.getElementById("present-btn").className == "temp")) {
   } else {
   }*/
-  dish._ratio = 17 / 30.5;
+  dish._ratio = winHeight / winWidth;
   dish._aspect = 4;
   dish.resize();
   alert.style.transform = "translate(-50%, 0)";
