@@ -166,7 +166,7 @@
       #chat {
         width: 24vw;
         height: 98%;
-        background: rgb(248, 250, 253);
+        background: rgb(255, 255, 255);
         border-radius: 4mm;
         display: none;
         align-items: center;
@@ -198,7 +198,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: rgb(204, 234, 254);
+        background: transparent;
         padding: 15px 0;
       }
       #chat form textarea {
@@ -206,19 +206,20 @@
         width: 100%;
         outline: none;
         border: none;
-        background: rgb(248, 250, 253);
+        background: rgb(227, 233, 241);
         height: 28px;
+        max-height: 55px;
         padding: 0px 18px;
         padding-top: 7px;
         border-radius: 5mm;
         font-family: poppins;
-        font-weight: 500;
-        color: rgb(0, 31, 39);
+        font-weight: 400;
+        color: rgb(0, 0, 0);
         margin-right: 5px;
         resize: none;
       }
       #chat form textarea:focus {
-        background: white;
+        background: rgb(228, 237, 248);
       }
       #chat form textarea::-webkit-scrollbar {
         width: 5px;
@@ -234,12 +235,15 @@
       #chat form textarea::-webkit-scrollbar-thumb:hover {
         background: rgb(110, 110, 110);
       }
+      #chat form textarea::placeholder {
+        color: black;
+      }
       #chat form button {
         width: 35px;
         height: 35px;
         border-radius: 50%;
-        background: rgb(0, 31, 39);
-        color: rgb(204, 234, 254);
+        background: rgb(191, 234, 204);
+        color: rgb(13, 59, 27);
         outline: none;
         border: none;
         text-align: center;
@@ -259,6 +263,9 @@
         bottom: 0;
         left: 0;
       }
+      .chat-body::-webkit-scrollbar {
+        width: 7px;
+      }
       .left-msg {
         float: left;
         width: 100%;
@@ -267,10 +274,10 @@
         width: fit-content;
         max-width: 75%;
         border-radius: 5mm;
-        background: rgb(149, 213, 255);
-        color: rgb(0, 31, 39);
+        background: rgb(201, 230, 252);
+        color: rgb(8, 24, 37);
         font-family: poppins;
-        font-weight: 500;
+        font-weight: 400;
         font-size: small;
         padding: 4px 10px;
         margin-left: 10px;
@@ -292,7 +299,8 @@
       }
       .right-msg .msg {
         float: right;
-        background: rgb(223, 232, 245);
+        background: rgb(237, 239, 243);
+        color: black;
       }
       .right-msg .msg-user {
         text-align: right;

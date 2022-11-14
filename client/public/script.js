@@ -360,8 +360,14 @@ socket.on("createMessage", (email, Username, text) => {
     appendVal.append(msgUser);
     appendVal.append(msg);
   }
+  let messages = document.getElementById("chat-body");
+  shouldScroll =
+    messages.scrollTop + messages.clientHeight === messages.scrollHeight;
   document.getElementById("chat-body").append(appendVal);
   console.log(document.getElementById("chat").style.display);
+  if (!shouldScroll) {
+    scrollToBottom();
+  }
   if (
     document.getElementById("chat").style.display == "none" ||
     document.getElementById("chat").style.display == ""
@@ -369,6 +375,11 @@ socket.on("createMessage", (email, Username, text) => {
     document.getElementById("notify").style.display = "block";
   }
 });
+
+function scrollToBottom() {
+  let messages = document.getElementById("chat-body");
+  messages.scrollTop = messages.scrollHeight;
+}
 
 socket.on("roomData", (userDetails) => {
   let allUsers = userDetails.users;
