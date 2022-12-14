@@ -500,7 +500,7 @@ socket.on("screenShared", (data) => {
   /*if (!(document.getElementById("present-btn").className == "temp")) {
   } else {
   }*/
-  dish._ratio = winHeight / winWidth;
+  dish._ratio = Math.min(winHeight / winWidth, winWidth / winHeight);
   dish._aspect = 4;
   dish.resize();
   alert.style.transform = "translate(-50%, 0)";
