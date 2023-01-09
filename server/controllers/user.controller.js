@@ -120,3 +120,17 @@ exports.findOneUser = (req, res) => {
       });
     });
 };
+
+exports.decryptEmail = async (req, res) => {
+  try {
+    let id = encrypt.decrypt(req.params.Email);
+    res.send({
+      success: true,
+      Email: id,
+    });
+  } catch {
+    res.send({
+      success: false,
+    });
+  }
+};

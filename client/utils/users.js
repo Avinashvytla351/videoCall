@@ -1,6 +1,6 @@
 const users = [];
 
-const addUser = ({ id, name, room, vidState, micState }) => {
+const addUser = ({ id, name, room, vidState, micState, isAdmin }) => {
   name = name.trim().toLowerCase();
   room = room.trim().toLowerCase();
 
@@ -11,7 +11,7 @@ const addUser = ({ id, name, room, vidState, micState }) => {
   if (!name || !room) return { error: "Username and room are required." };
   if (existingUser) return { error: "Username already exists." };
 
-  var user = { id, name, room, vidState, micState };
+  var user = { id, name, room, vidState, micState, isAdmin };
 
   users.push(user);
 

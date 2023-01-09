@@ -79,7 +79,15 @@ const addVideoStream = (video, stream, namePart, peerPart) => {
 };
 
 myPeer.on("open", (peerId) => {
-  socket.emit("join-room", RoomId, MeetingAdmin, Email, Username, peerId);
+  socket.emit(
+    "join-room",
+    RoomId,
+    MeetingAdmin,
+    Email,
+    Username,
+    peerId,
+    isAdmin
+  );
 });
 
 try {
@@ -90,7 +98,7 @@ try {
     })
     .then((stream) => {
       myVideoStream = stream;
-      if (Email === "<%= adminEmail %>") {
+      if (isAdmin) {
         addVideoStream(myVideo, stream, "You (Admin)", "");
       } else {
         addVideoStream(myVideo, stream, "You", "");
@@ -119,7 +127,7 @@ try {
     .catch((err) => {
       var stream = null;
       myVideoStream = stream;
-      if (Email === "<%= adminEmail %>") {
+      if (isAdmin) {
         addVideoStream(myVideo, stream, "You (Admin)");
       } else {
         addVideoStream(myVideo, stream, "You");
@@ -149,7 +157,7 @@ try {
 } catch (err) {
   var stream = null;
   myVideoStream = stream;
-  if (Email === "<%= adminEmail %>") {
+  if (isAdmin) {
     addVideoStream(myVideo, stream, "You (Admin)");
   } else {
     addVideoStream(myVideo, stream, "You");
@@ -306,6 +314,8 @@ const setStop = () => {
   }
 };
 
+//Chat part
+
 document.onkeydown = (e) => {
   e = e || window.event;
   if (e.keyCode == 13 && !e.shiftKey) {
@@ -364,7 +374,6 @@ socket.on("createMessage", (email, Username, text) => {
   shouldScroll =
     messages.scrollTop + messages.clientHeight === messages.scrollHeight;
   document.getElementById("chat-body").append(appendVal);
-  console.log(document.getElementById("chat").style.display);
   if (!shouldScroll) {
     scrollToBottom();
   }
@@ -381,10 +390,35 @@ function scrollToBottom() {
   messages.scrollTop = messages.scrollHeight;
 }
 
+var chat = document.getElementById("chat-btn");
+var chatclose = document.getElementById("chatclose");
+chat.onclick = function () {
+  document.getElementById("notify").style.display = "none";
+  chat.style.background = "rgb(1, 87, 140)";
+  chat.style.border = "none";
+  document.getElementById("chat").style.display = "flex";
+  setTimeout(() => {
+    document.getElementById("chat").style.transform = "translateX(0)";
+    dish.resize();
+  }, 100);
+};
+chatclose.onclick = function () {
+  document.getElementById("notify").style.display = "none";
+  chat.style.background = "rgba(255, 255, 255, 0.15)";
+  document.getElementById("chat").style.transform = "translateX(1000px)";
+  setTimeout(() => {
+    document.getElementById("chat").style.display = "none";
+    dish.resize();
+  }, 100);
+};
+//chat part end
+
 socket.on("roomData", (userDetails) => {
   let allUsers = userDetails.users;
+  console.log(allUsers);
   allUsers.forEach((user) => {
     let userName = user.name.split("_");
+    let admin = user.isAdmin;
     let peerId = userName[0];
     if (userName[1]) {
       userName = userName[1].toUpperCase();
@@ -393,6 +427,9 @@ socket.on("roomData", (userDetails) => {
       }
     } else {
       userName = "Anonymous";
+    }
+    if (admin) {
+      userName = userName + " (Admin)";
     }
     let userDiv = document.createElement("div");
     userDiv.className = "user";
@@ -540,3 +577,441 @@ socket.on("screenStopped", (data) => {
   dish._aspect = 0;
   dish.resize();
 });
+
+$("#allMicIn").change(function () {
+  let allMicIn = document.getElementById("allMicIn");
+  socket.emit("allMic", allMicIn.checked);
+  let anonUserIn = document.getElementById("anonUserIn");
+  if (isAdmin && allMicIn.checked && anonUserIn.checked) {
+    $("#anonMicIn").prop("checked", true);
+    document.getElementById("anonMicIn").disabled = false;
+  } else if (isAdmin && !allMicIn.checked) {
+    $("#anonMicIn").prop("checked", false);
+    document.getElementById("anonMicIn").disabled = true;
+  }
+});
+
+socket.on("allMicChange", (micVal) => {
+  console.log("You are Muted", Email);
+  let mic = document.getElementById("mic-btn");
+  if (isAdmin || micVal) {
+    mic.disabled = false;
+  } else {
+    try {
+      let enabled = myVideoStream.getAudioTracks()[0].enabled;
+      if (enabled) {
+        myVideoStream.getAudioTracks()[0].enabled = false;
+        setMute();
+      }
+    } catch {
+      setMute();
+    }
+    mic.disabled = true;
+  }
+});
+
+$("#allVidIn").change(function () {
+  let allVidIn = document.getElementById("allVidIn");
+  socket.emit("allVid", allVidIn.checked);
+  let anonUserIn = document.getElementById("anonUserIn");
+  if (isAdmin && allVidIn.checked && anonUserIn.checked) {
+    $("#anonVidIn").prop("checked", true);
+    document.getElementById("anonVidIn").disabled = false;
+  } else if (isAdmin && !allVidIn.checked) {
+    $("#anonVidIn").prop("checked", false);
+    document.getElementById("anonVidIn").disabled = true;
+  }
+});
+
+socket.on("allVidChange", (vidVal) => {
+  console.log("You are not allowed to turn your video on");
+  let vid = document.getElementById("video-btn");
+  if (isAdmin || vidVal) {
+    vid.disabled = false;
+  } else {
+    try {
+      let enabled = myVideoStream.getVideoTracks()[0].enabled;
+      if (enabled) {
+        myVideoStream.getVideoTracks()[0].enabled = false;
+        setStop();
+      }
+    } catch {
+      setStop();
+    }
+    vid.disabled = true;
+  }
+});
+
+$("#allChatIn").change(function () {
+  let allChatIn = document.getElementById("allChatIn");
+  socket.emit("allChat", allChatIn.checked);
+  let anonUserIn = document.getElementById("anonUserIn");
+  if (isAdmin && allChatIn.checked && anonUserIn.checked) {
+    $("#anonChatIn").prop("checked", true);
+    document.getElementById("anonChatIn").disabled = false;
+  } else if (isAdmin && !allChatIn.checked) {
+    $("#anonChatIn").prop("checked", false);
+    document.getElementById("anonChatIn").disabled = true;
+  }
+});
+
+socket.on("allChatChange", (chatVal) => {
+  if (isAdmin || chatVal) {
+    console.log("Your Chat has been enabled");
+    chat.disabled = false;
+    document.getElementById("message-chat-icon").innerHTML = "message";
+  } else {
+    console.log("Your Chat has been disabled");
+    try {
+      chatclose.click();
+      setTimeout(() => {
+        chatclose.click();
+      }, 1000);
+    } catch {
+      setTimeout(() => {
+        chatclose.click();
+      }, 2000);
+    }
+    chat.disabled = true;
+    document.getElementById("message-chat-icon").innerHTML =
+      "speaker_notes_off";
+  }
+});
+
+$("#allPreIn").change(function () {
+  let allPreIn = document.getElementById("allPreIn");
+  socket.emit("allPre", allPreIn.checked);
+  let anonUserIn = document.getElementById("anonUserIn");
+  if (isAdmin && allPreIn.checked && anonUserIn.checked) {
+    $("#anonPreIn").prop("checked", true);
+    document.getElementById("anonPreIn").disabled = false;
+  } else if (isAdmin && !allPreIn.checked) {
+    $("#anonPreIn").prop("checked", false);
+    document.getElementById("anonPreIn").disabled = true;
+  }
+});
+
+socket.on("allPreChange", (preVal) => {
+  if (isAdmin || preVal) {
+    document.getElementById("present-btn").style.background =
+      "rgb(183,243,151)";
+    document.getElementById("present-btn").disabled = false;
+  } else {
+    document.getElementById("present-btn").style.background =
+      "rgba(255, 255, 255, 0.089)";
+    document.getElementById("present-btn").disabled = true;
+  }
+});
+
+$("#anonMicIn").change(function () {
+  let anonMicIn = document.getElementById("anonMicIn");
+  socket.emit("anonMic", anonMicIn.checked);
+});
+
+socket.on("anonMicChange", (anonMicVal) => {
+  if (!Email) {
+    console.log("You are Muted", Email);
+    let mic = document.getElementById("mic-btn");
+    if (anonMicVal) {
+      mic.disabled = false;
+    } else {
+      try {
+        let enabled = myVideoStream.getAudioTracks()[0].enabled;
+        if (enabled) {
+          myVideoStream.getAudioTracks()[0].enabled = false;
+          setMute();
+        }
+      } catch {
+        setMute();
+      }
+      mic.disabled = true;
+    }
+  }
+});
+
+$("#anonVidIn").change(function () {
+  let anonVidIn = document.getElementById("anonVidIn");
+  socket.emit("anonVid", anonVidIn.checked);
+});
+
+socket.on("anonVidChange", (anonVidVal) => {
+  if (!Email) {
+    console.log("You are not allowed to turn your video on");
+    let vid = document.getElementById("video-btn");
+    if (anonVidVal) {
+      vid.disabled = false;
+    } else {
+      try {
+        let enabled = myVideoStream.getVideoTracks()[0].enabled;
+        if (enabled) {
+          myVideoStream.getVideoTracks()[0].enabled = false;
+          setStop();
+        }
+      } catch {
+        setStop();
+      }
+      vid.disabled = true;
+    }
+  }
+});
+
+$("#anonChatIn").change(function () {
+  let anonChatIn = document.getElementById("anonChatIn");
+  socket.emit("anonChat", anonChatIn.checked);
+});
+
+socket.on("anonChatChange", (anonChatVal) => {
+  if (!Email) {
+    if (anonChatVal) {
+      console.log("Your Chat has been enabled");
+      chat.disabled = false;
+      document.getElementById("message-chat-icon").innerHTML = "message";
+    } else {
+      console.log("Your Chat has been disabled");
+      try {
+        chatclose.click();
+        setTimeout(() => {
+          chatclose.click();
+        }, 1000);
+      } catch {
+        setTimeout(() => {
+          chatclose.click();
+        }, 2000);
+      }
+      chat.disabled = true;
+      document.getElementById("message-chat-icon").innerHTML =
+        "speaker_notes_off";
+    }
+  }
+});
+
+$("#anonPreIn").change(function () {
+  let anonPreIn = document.getElementById("anonPreIn");
+  socket.emit("anonPre", anonPreIn.checked);
+});
+
+socket.on("anonPreChange", (anonPreVal) => {
+  if (!Email) {
+    if (anonPreVal) {
+      document.getElementById("present-btn").style.background =
+        "rgb(183,243,151)";
+      document.getElementById("present-btn").disabled = false;
+    } else {
+      document.getElementById("present-btn").style.background =
+        "rgba(255, 255, 255, 0.089)";
+      document.getElementById("present-btn").disabled = true;
+    }
+  }
+});
+
+$("#anonUserIn").change(function () {
+  let anonUserIn = document.getElementById("anonUserIn");
+  socket.emit("anonUser", anonUserIn.checked);
+  if (isAdmin && anonUserIn.checked) {
+    $("#anonPreIn").prop("checked", true);
+    $("#anonChatIn").prop("checked", true);
+    $("#anonVidIn").prop("checked", true);
+    $("#anonMicIn").prop("checked", true);
+    document.getElementById("anonPreIn").disabled = false;
+    document.getElementById("anonChatIn").disabled = false;
+    document.getElementById("anonVidIn").disabled = false;
+    document.getElementById("anonMicIn").disabled = false;
+  } else if (isAdmin && !anonUserIn.checked) {
+    $("#anonPreIn").prop("checked", false);
+    $("#anonChatIn").prop("checked", false);
+    $("#anonVidIn").prop("checked", false);
+    $("#anonMicIn").prop("checked", false);
+    document.getElementById("anonPreIn").disabled = true;
+    document.getElementById("anonChatIn").disabled = true;
+    document.getElementById("anonVidIn").disabled = true;
+    document.getElementById("anonMicIn").disabled = true;
+  }
+});
+
+socket.on("anonUserChange", (anonUserVal) => {
+  if (!Email) {
+    if (anonUserVal) {
+    } else {
+      window.location.replace("/");
+    }
+  }
+});
+
+const myInterval = setInterval(() => {
+  console.log(10);
+  try {
+    socket.emit("getSocketSetting", socket.id);
+    stopInterval();
+  } catch {}
+}, 1000);
+
+function stopInterval() {
+  clearInterval(myInterval);
+}
+
+socket.on("socketSettings", (socketSettings) => {
+  console.log(socketSettings);
+  if (!Email) {
+    if (socketSettings.anonUser) {
+    } else {
+      window.location.replace("/");
+    }
+
+    let mic = document.getElementById("mic-btn");
+    if (socketSettings.anonMic) {
+      mic.disabled = false;
+    } else {
+      try {
+        let enabled = myVideoStream.getAudioTracks()[0].enabled;
+        if (enabled) {
+          myVideoStream.getAudioTracks()[0].enabled = false;
+          setMute();
+        }
+      } catch {
+        setMute();
+      }
+      mic.disabled = true;
+    }
+
+    let vid = document.getElementById("video-btn");
+    if (socketSettings.anonVid) {
+      vid.disabled = false;
+    } else {
+      try {
+        let enabled = myVideoStream.getVideoTracks()[0].enabled;
+        if (enabled) {
+          myVideoStream.getVideoTracks()[0].enabled = false;
+          setStop();
+        }
+      } catch {
+        setStop();
+      }
+      vid.disabled = true;
+    }
+
+    if (socketSettings.anonChat) {
+      console.log("Your Chat has been enabled");
+      chat.disabled = false;
+      document.getElementById("message-chat-icon").innerHTML = "message";
+    } else {
+      console.log("Your Chat has been disabled");
+      try {
+        chatclose.click();
+        setTimeout(() => {
+          chatclose.click();
+        }, 1000);
+      } catch {
+        setTimeout(() => {
+          chatclose.click();
+        }, 2000);
+      }
+      chat.disabled = true;
+      document.getElementById("message-chat-icon").innerHTML =
+        "speaker_notes_off";
+    }
+
+    if (socketSettings.anonPre) {
+      document.getElementById("present-btn").style.background =
+        "rgb(183,243,151)";
+      document.getElementById("present-btn").disabled = false;
+    } else {
+      document.getElementById("present-btn").style.background =
+        "rgba(255, 255, 255, 0.089)";
+      document.getElementById("present-btn").disabled = true;
+    }
+  }
+
+  if (isAdmin || socketSettings.userPre) {
+    document.getElementById("present-btn").style.background =
+      "rgb(183,243,151)";
+    document.getElementById("present-btn").disabled = false;
+  } else {
+    document.getElementById("present-btn").style.background =
+      "rgba(255, 255, 255, 0.089)";
+    document.getElementById("present-btn").disabled = true;
+  }
+
+  if (isAdmin || socketSettings.userChat) {
+    chat.disabled = false;
+    document.getElementById("message-chat-icon").innerHTML = "message";
+  } else {
+    console.log("Your Chat has been disabled");
+    try {
+      chatclose.click();
+      setTimeout(() => {
+        chatclose.click();
+      }, 1000);
+    } catch {
+      setTimeout(() => {
+        chatclose.click();
+      }, 2000);
+    }
+    chat.disabled = true;
+    document.getElementById("message-chat-icon").innerHTML =
+      "speaker_notes_off";
+  }
+
+  let vid = document.getElementById("video-btn");
+  if (isAdmin || socketSettings.userVid) {
+    vid.disabled = false;
+  } else {
+    try {
+      let enabled = myVideoStream.getVideoTracks()[0].enabled;
+      if (enabled) {
+        myVideoStream.getVideoTracks()[0].enabled = false;
+        setStop();
+      }
+    } catch {
+      setStop();
+    }
+    vid.disabled = true;
+  }
+
+  let mic = document.getElementById("mic-btn");
+  if (isAdmin || socketSettings.userMic) {
+    mic.disabled = false;
+  } else {
+    try {
+      let enabled = myVideoStream.getAudioTracks()[0].enabled;
+      if (enabled) {
+        myVideoStream.getAudioTracks()[0].enabled = false;
+        setMute();
+      }
+    } catch {
+      setMute();
+    }
+    mic.disabled = true;
+  }
+});
+
+document.getElementById("copy-link").onclick = function () {
+  navigator.clipboard.writeText(window.location.href);
+  document.getElementById("copy-icon").innerHTML = "done";
+  setTimeout(() => {
+    document.getElementById("copy-icon").innerHTML = "content_copy";
+  }, 1000);
+};
+
+var dotsmenu = document.querySelector(".settings-options");
+var dots = document.querySelector(".setting-btn");
+var toggle = 0;
+var press = 0;
+dotsmenu.style.display = "none";
+dots.onclick = function () {
+  if (toggle == 0) {
+    dotsmenu.style.display = "block";
+    toggle = 1;
+  } else {
+    dotsmenu.style.display = "none";
+    toggle = 0;
+  }
+  press = 1;
+};
+window.onclick = function () {
+  if (toggle == 1 && press == 0) {
+    dotsmenu.style.display = "none";
+    toggle = 0;
+  } else {
+    press = 0;
+  }
+};

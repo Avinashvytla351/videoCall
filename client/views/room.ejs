@@ -32,13 +32,15 @@
       var Username = "<%= Username %>";
       var AdminEmail = "<%= adminEmail %>";
       var clientUrl = "<%= clientUrl %>";
+      var isAdmin = "<%= isAdmin %>";
+      isAdmin = isAdmin == "true";
     </script>
     <script
       defer
       src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"
     ></script>
     <script src="/socket.io/socket.io.js" defer></script>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <style>
       html {
         scroll-behavior: smooth;
@@ -98,6 +100,7 @@
         background-size: cover;
         overflow: hidden;
         transition: 0.25s;
+        box-sizing: border-box;
       }
       .videoContent {
         height: fit-content;
@@ -109,6 +112,7 @@
         overflow: hidden;
         display: inline-block;
         transition: 0.25s;
+        box-sizing: border-box;
       }
       .videoContent .userName {
         position: absolute;
@@ -555,6 +559,152 @@
         line-height: 25px;
         margin-right: 5px;
       }
+      .meeting-settings {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        width: fit-content;
+        z-index: 9999;
+      }
+      .setting-btn {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border-radius: 50%;
+      }
+      .setting-btn:hover {
+        background: rgba(0, 0, 0, 0.048);
+      }
+      .setting-btn span {
+        font-size: xx-large;
+        color: rgb(0, 31, 39);
+      }
+      .switch {
+        position: relative;
+        display: inline-block;
+        width: 42px;
+        height: 25px;
+      }
+
+      .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: 0.4s;
+        transition: 0.4s;
+        box-sizing: border-box;
+        border: 0.45mm solid rgba(2, 62, 77, 0.258);
+      }
+
+      .slider:before {
+        position: absolute;
+        content: "";
+        font-family: "Material Icons";
+        height: 15px;
+        width: 15px;
+        left: calc(5px - 0.45mm);
+        bottom: calc(5px - 0.45mm);
+        background-color: white;
+        -webkit-transition: 0.4s;
+        transition: 0.4s;
+      }
+
+      input:checked + .slider {
+        background-color: rgb(13, 132, 212);
+        border: none;
+      }
+
+      input:focus + .slider {
+        box-shadow: 0 0 1px rgb(201, 230, 252);
+      }
+
+      input:checked + .slider:before {
+        height: 19px;
+        width: 19px;
+        bottom: 3px;
+        content: "done";
+        line-height: 19px;
+        font-size: small;
+        text-align: center;
+        -webkit-transform: translateX(17px);
+        -ms-transform: translateX(17px);
+        transform: translateX(17px);
+      }
+
+      /* Rounded sliders */
+      .slider.round {
+        border-radius: 34px;
+      }
+
+      .slider.round:before {
+        border-radius: 50%;
+      }
+      .settings-options {
+        width: 350px;
+        box-sizing: border-box;
+        padding: 15px;
+        font-family: poppins;
+        background: rgb(248, 250, 253);
+        box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 2px 0px,
+          rgba(0, 0, 0, 0.15) 0px 1px 3px 1px;
+        border-radius: 2mm;
+      }
+      .input-field {
+        width: 100%;
+        font-size: medium;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 15px;
+      }
+      .head-setting {
+        font-weight: 500;
+        margin-bottom: 20px;
+      }
+      .setting-section {
+        padding-top: 10px;
+        border-bottom: 0.5mm solid rgba(0, 0, 0, 0.08);
+      }
+      .settings-title {
+        width: 100%;
+        font-size: large;
+        margin-bottom: 10px;
+      }
+      .copy-link {
+        width: 100px;
+        height: fit-content;
+        padding: 7px 15px;
+        background: rgb(183, 243, 151);
+        color: rgb(13, 59, 27);
+        font-size: medium;
+        border-radius: 1mm;
+        margin-top: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+      .copy-link span {
+        font-size: large;
+        color: rgb(13, 59, 27);
+        margin-right: 5px;
+      }
+      .copy-link:hover {
+        background: rgb(136, 214, 94);
+      }
       @media screen and (max-width: 700px) {
         .controls {
           width: 95%;
@@ -615,6 +765,89 @@
     </style>
   </head>
   <body>
+    <% if( isAdmin) { %>
+    <div class="meeting-settings">
+      <div class="setting-btn" title="settings" id="setting-btn">
+        <span class="material-icons-outlined"> settings </span>
+      </div>
+      <div class="settings-options">
+        <div class="settings-title">Settings</div>
+        <div class="setting-section">
+          <span class="input-field">
+            <span class="label">Mic for Users</span>
+            <label class="switch" id="allMic">
+              <input type="checkbox" checked id="allMicIn" />
+              <span class="slider round"></span>
+            </label>
+          </span>
+          <span class="input-field">
+            <span class="label">Video for Users</span>
+            <label class="switch">
+              <input type="checkbox" checked id="allVidIn" />
+              <span class="slider round"></span>
+            </label>
+          </span>
+          <span class="input-field">
+            <span class="label">Chat for Users</span>
+            <label class="switch">
+              <input type="checkbox" checked id="allChatIn" />
+              <span class="slider round"></span>
+            </label>
+          </span>
+          <span class="input-field">
+            <span class="label">Present for Users</span>
+            <label class="switch">
+              <input type="checkbox" checked id="allPreIn" />
+              <span class="slider round"></span>
+            </label>
+          </span>
+        </div>
+        <div class="setting-section">
+          <span class="input-field head-setting">
+            <span class="label">Allow Anonymous Users</span>
+            <label class="switch">
+              <input type="checkbox" checked id="anonUserIn" />
+              <span class="slider round"></span>
+            </label>
+          </span>
+          <span class="input-field">
+            <span class="label">Mic for Anonymous Users</span>
+            <label class="switch">
+              <input type="checkbox" checked id="anonMicIn" />
+              <span class="slider round"></span>
+            </label>
+          </span>
+          <span class="input-field">
+            <span class="label">Video for Anonymous Users</span>
+            <label class="switch">
+              <input type="checkbox" checked id="anonVidIn" />
+              <span class="slider round"></span>
+            </label>
+          </span>
+          <span class="input-field">
+            <span class="label">Chat for Anonymous Users</span>
+            <label class="switch">
+              <input type="checkbox" checked id="anonChatIn" />
+              <span class="slider round"></span>
+            </label>
+          </span>
+          <span class="input-field">
+            <span class="label">Present for Anonymous Users</span>
+            <label class="switch">
+              <input type="checkbox" checked id="anonPreIn" />
+              <span class="slider round"></span>
+            </label>
+          </span>
+        </div>
+        <div class="copy-link" id="copy-link">
+          <span class="material-icons-outlined" id="copy-icon">
+            content_copy
+          </span>
+          Copy Link
+        </div>
+      </div>
+    </div>
+    <% } %>
     <div id="room-grid" class="Scenary">
       <div class="" id="ssAlert">Your Screen is being shared</div>
     </div>
@@ -643,7 +876,9 @@
       </div>
       <div class="control-btn">
         <button type="button" id="chat-btn">
-          <span class="material-icons-outlined"> message </span>
+          <span class="material-icons-outlined" id="message-chat-icon">
+            message
+          </span>
           <span class="material-icons" id="notify"> fiber_manual_record </span>
         </button>
       </div>
@@ -735,28 +970,7 @@
         //all users tab open and close----------------------------------
 
         //chat tab open and close---------------------------------------
-        var chat = document.getElementById("chat-btn");
-        var chatclose = document.getElementById("chatclose");
-        chat.onclick = function () {
-          document.getElementById("notify").style.display = "none";
-          chat.style.background = "rgb(1, 87, 140)";
-          chat.style.border = "none";
-          document.getElementById("chat").style.display = "flex";
-          setTimeout(() => {
-            document.getElementById("chat").style.transform = "translateX(0)";
-            dish.resize();
-          }, 100);
-        };
-        chatclose.onclick = function () {
-          document.getElementById("notify").style.display = "none";
-          chat.style.background = "rgba(255, 255, 255, 0.15)";
-          document.getElementById("chat").style.transform =
-            "translateX(1000px)";
-          setTimeout(() => {
-            document.getElementById("chat").style.display = "none";
-            dish.resize();
-          }, 100);
-        };
+
         //chat tab open and close---------------------------------------
 
         //other participants tab open and close-------------------------

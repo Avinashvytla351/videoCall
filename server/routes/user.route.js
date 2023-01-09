@@ -7,4 +7,7 @@ module.exports = (app) => {
 
   //find one user
   app.get("/findOneUser/:Email", users.findOneUser);
+
+  //decrypt Email
+  app.get("/decryptEmail/:Email", users.decryptEmail);
 };

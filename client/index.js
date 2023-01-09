@@ -173,16 +173,31 @@ app.get("/:meetingAdmin/:roomId", async (req, res) => {
           .then((body) => body.json())
           .then((json) => {
             if (json.success) {
-              res.render("room", {
-                roomId: req.params.roomId,
-                meetingAdmin: req.params.meetingAdmin,
-                Email: req.cookies.email,
-                Username: req.cookies.username,
-                adminName: json.data.Username,
-                adminEmail: json.data.Email,
-                clientUrl: clientRoute,
-                serverUr: serverRoute,
-              });
+              let url = serverRoute + "/decryptEmail/" + req.cookies.email;
+              let options = {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+                json: true,
+              };
+              fetch(url, options)
+                .then((body1) => body1.json())
+                .then((json1) => {
+                  let isAdmin = false;
+                  if (json1.success) {
+                    isAdmin = json1.Email == json.data.Email;
+                  }
+                  res.render("room", {
+                    roomId: req.params.roomId,
+                    meetingAdmin: req.params.meetingAdmin,
+                    Email: req.cookies.email,
+                    Username: req.cookies.username,
+                    adminName: json.data.Username,
+                    adminEmail: json.data.Email,
+                    clientUrl: clientRoute,
+                    serverUr: serverRoute,
+                    isAdmin: isAdmin,
+                  });
+                });
             } else {
               res.render("error", { message: json.message });
             }
@@ -202,67 +217,132 @@ const {
   editUserVid,
 } = require("./utils/users.js");
 
+var socketSettings = {
+  userMic: true,
+  userVid: true,
+  userChat: true,
+  userPre: true,
+  anonUser: true,
+  anonMic: true,
+  anonVid: true,
+  anonChat: true,
+  anonPre: true,
+};
+
 io.of("/new").on("connection", function (socket) {
-  socket.on("join-room", (RoomId, MeetingAdmin, Email, Username, peerId) => {
-    let roomVal = MeetingAdmin + "/" + RoomId;
-    const { error, user } = addUser({
-      id: socket.id,
-      name: peerId,
-      room: roomVal,
-      vidState: "videocam",
-      micState: "keyboard_voice",
-    });
-    socket.join(roomVal);
-    let userVal = peerId + ":" + Username + ":" + Email;
-    socket.broadcast.to(roomVal).emit("user-connected", userVal);
-
-    socket.on("message", (Email, Username, text) => {
-      io.of("/new").to(roomVal).emit("createMessage", Email, Username, text);
-    });
-
-    socket.on("disconnect", () => {
-      const user = removeUser(socket.id);
-      socket.broadcast.to(roomVal).emit("user-disconnected", userVal);
-    });
-
-    if (user) {
-      io.to(user.room).emit("message", {
-        user: "adminX",
-        text: `${user.name.toUpperCase()} has left.`,
+  socket.on(
+    "join-room",
+    (RoomId, MeetingAdmin, Email, Username, peerId, isAdmin) => {
+      let roomVal = MeetingAdmin + "/" + RoomId;
+      const { error, user } = addUser({
+        id: socket.id,
+        name: peerId,
+        room: roomVal,
+        vidState: "videocam",
+        micState: "keyboard_voice",
+        isAdmin: isAdmin,
       });
-      io.of("/new")
-        .to(user.room)
-        .emit("roomData", {
-          room: user.room,
-          users: getUsersInRoom(user.room),
+      socket.join(roomVal);
+      let userVal = peerId + ":" + Username + ":" + Email;
+      socket.broadcast.to(roomVal).emit("user-connected", userVal);
+
+      socket.on("message", (Email, Username, text) => {
+        io.of("/new").to(roomVal).emit("createMessage", Email, Username, text);
+      });
+
+      socket.on("disconnect", () => {
+        const user = removeUser(socket.id);
+        socket.broadcast.to(roomVal).emit("user-disconnected", userVal);
+      });
+
+      if (user) {
+        io.to(user.room).emit("message", {
+          user: "adminX",
+          text: `${user.name.toUpperCase()} has left.`,
         });
+        io.of("/new")
+          .to(user.room)
+          .emit("roomData", {
+            room: user.room,
+            users: getUsersInRoom(user.room),
+          });
+      }
+
+      socket.on("mic-change", (id, micStatus) => {
+        editUserMic(id, micStatus);
+        io.of("/new")
+          .to(roomVal)
+          .emit("mic-changed", { peerId: peerId, user: getUser(id) });
+      });
+
+      socket.on("vid-change", (id, vidStatus) => {
+        editUserVid(id, vidStatus);
+        io.of("/new")
+          .to(roomVal)
+          .emit("vid-changed", { peerId: peerId, user: getUser(id) });
+      });
+
+      socket.on("screenSharing", (iconValue) => {
+        io.of("/new")
+          .to(roomVal)
+          .emit("screenShared", { idVal: peerId, icon: iconValue });
+      });
+      socket.on("screenStopping", (iconValue) => {
+        io.of("/new")
+          .to(roomVal)
+          .emit("screenStopped", { idVal: peerId, icon: iconValue });
+      });
+
+      socket.on("allMic", (micVal) => {
+        socketSettings.userMic = micVal;
+        io.of("/new").to(roomVal).emit("allMicChange", micVal);
+      });
+
+      socket.on("allVid", (vidVal) => {
+        socketSettings.userVid = vidVal;
+        io.of("/new").to(roomVal).emit("allVidChange", vidVal);
+      });
+
+      socket.on("allChat", (chatVal) => {
+        socketSettings.userChat = chatVal;
+        io.of("/new").to(roomVal).emit("allChatChange", chatVal);
+      });
+
+      socket.on("allPre", (preVal) => {
+        socketSettings.userPre = preVal;
+        io.of("/new").to(roomVal).emit("allPreChange", preVal);
+      });
+
+      socket.on("anonMic", (anonMicVal) => {
+        socketSettings.anonMic = anonMicVal;
+        io.of("/new").to(roomVal).emit("anonMicChange", anonMicVal);
+      });
+
+      socket.on("anonVid", (anonVidVal) => {
+        socketSettings.anonVid = anonVidVal;
+        io.of("/new").to(roomVal).emit("anonVidChange", anonVidVal);
+      });
+
+      socket.on("anonChat", (anonChatVal) => {
+        socketSettings.anonChat = anonChatVal;
+        io.of("/new").to(roomVal).emit("anonChatChange", anonChatVal);
+      });
+
+      socket.on("anonPre", (anonPreVal) => {
+        socketSettings.anonPre = anonPreVal;
+        io.of("/new").to(roomVal).emit("anonPreChange", anonPreVal);
+      });
+
+      socket.on("anonUser", (anonUserVal) => {
+        socketSettings.anonUser = anonUserVal;
+        io.of("/new").to(roomVal).emit("anonUserChange", anonUserVal);
+      });
+
+      socket.on("getSocketSetting", (socketId) => {
+        io.of("/new").to(socketId).emit("socketSettings", socketSettings);
+      });
     }
-
-    socket.on("mic-change", (id, micStatus) => {
-      editUserMic(id, micStatus);
-      io.of("/new")
-        .to(roomVal)
-        .emit("mic-changed", { peerId: peerId, user: getUser(id) });
-    });
-
-    socket.on("vid-change", (id, vidStatus) => {
-      editUserVid(id, vidStatus);
-      io.of("/new")
-        .to(roomVal)
-        .emit("vid-changed", { peerId: peerId, user: getUser(id) });
-    });
-
-    socket.on("screenSharing", (iconValue) => {
-      io.of("/new")
-        .to(roomVal)
-        .emit("screenShared", { idVal: peerId, icon: iconValue });
-    });
-    socket.on("screenStopping", (iconValue) => {
-      io.of("/new")
-        .to(roomVal)
-        .emit("screenStopped", { idVal: peerId, icon: iconValue });
-    });
-  });
+  );
 });
 
 app.get("/logout", async (req, res) => {
