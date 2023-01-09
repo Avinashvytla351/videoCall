@@ -994,24 +994,11 @@ document.getElementById("copy-link").onclick = function () {
 
 var dotsmenu = document.querySelector(".settings-options");
 var dots = document.querySelector(".setting-btn");
-var toggle = 0;
-var press = 0;
 dotsmenu.style.display = "none";
+var settClose = document.getElementById("sett-close");
 dots.onclick = function () {
-  if (toggle == 0) {
-    dotsmenu.style.display = "block";
-    toggle = 1;
-  } else {
-    dotsmenu.style.display = "none";
-    toggle = 0;
-  }
-  press = 1;
+  dotsmenu.style.display = "block";
 };
-window.onclick = function () {
-  if (toggle == 1 && press == 0) {
-    dotsmenu.style.display = "none";
-    toggle = 0;
-  } else {
-    press = 0;
-  }
+settClose.onclick = function () {
+  dotsmenu.style.display = "none";
 };

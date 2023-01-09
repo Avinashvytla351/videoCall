@@ -682,6 +682,12 @@
         width: 100%;
         font-size: large;
         margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .settings-title span {
+        cursor: pointer;
       }
       .copy-link {
         width: 100px;
@@ -771,7 +777,10 @@
         <span class="material-icons-outlined"> settings </span>
       </div>
       <div class="settings-options">
-        <div class="settings-title">Settings</div>
+        <div class="settings-title">
+          Settings
+          <span class="material-icons-outlined" id="sett-close"> close </span>
+        </div>
         <div class="setting-section">
           <span class="input-field">
             <span class="label">Mic for Users</span>
