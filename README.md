@@ -43,6 +43,3 @@ npm start
 - Your instance is now available on [http://localhost:80](http://localhost:80)
 
 Work in progress.
-
-Credits
-- Avinash Vytla (@Avinashvytla351)
